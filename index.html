@@ -18,6 +18,10 @@
     }
     .brand-bar{background:var(--dresden-black);color:#fff}
     .brand-bar .logo-dot{width:12px;height:12px;border-radius:50%;background:var(--dresden-gold);display:inline-block;margin-right:.5rem}
+    .brand-bar .lang-btn{color:#fff;border-color:#fff;background:rgba(255,255,255,.08);font-weight:700}
+    .brand-bar .lang-btn:hover{color:var(--dresden-black);background:#fff;border-color:#fff}
+    .brand-bar .lang-btn.active{background:var(--dresden-gold);border-color:var(--dresden-gold);color:var(--dresden-black);box-shadow:0 0 0 2px #fff}
+    .brand-bar .lang-btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
     .nav-link{font-weight:600}
     .navbar-nav{gap:1rem}
     .navbar-nav .nav-link{padding:.75rem 1.5rem}
@@ -154,13 +158,14 @@
           <div class="card card-border">
             <div class="card-body">
               <div class="d-flex align-items-center justify-content-between">
-                <h2 class="h4 mb-3 section-title" data-i18n="general.title">Willkommen im Open Data Portal der Landeshauptstadt Dresden</h2>
+                <h1 class="h4 mb-3 section-title" data-i18n="general.title">Willkommen im Open Data Portal der Landeshauptstadt Dresden</h1>
                 <div class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" id="toggleSimpleGeneral" />
                   <label class="form-check-label" for="toggleSimpleGeneral" data-i18n="general.simpleToggle">Einfache Sprache</label>
                 </div>
               </div>
-              <p class="mb-4" data-i18n="general.intro">Entdecken Sie offene Daten, Anwendungen und Initiativen rund um Open Data in Dresden. Nutzen Sie die Suche, um in allen Bereichen zu finden.</p>
+              <h2 class="h5 text-secondary mb-3" data-i18n="general.subtitle">Entdecken Sie offene Daten, Anwendungen und Initiativen rund um Open Data in Dresden.</h2>
+              <p class="mb-4" data-i18n="general.intro">Nutzen Sie die Suche, um in allen Bereichen Ergebnisse zu finden.</p>
               <div id="generalSimple" class="d-none">
                 <p class="simple-chip"><i class="bi bi-info-circle" aria-hidden="true"></i><span data-i18n="general.simpleHint">Sie lesen den Text in einfacher Sprache.</span></p>
                 <p data-i18n="general.simple1">Hier finden Sie Daten der Stadt. Daten sind Informationen. Zum Beispiel: Zahlen, Listen, Karten.</p>
@@ -185,7 +190,7 @@
 
           <!-- Blog Feed 2-column with images -->
           <div class="mt-4">
-            <h3 class="h5 mb-3 section-title" data-i18n="blog.title">Aktuelles: Open-Data-Projekte & Initiativen</h3>
+            <h3 class="h4 mb-3 section-title" data-i18n="blog.title">Aktuelles: Open-Data-Projekte & Initiativen</h3>
             <div id="blogFeed" class="row g-3"></div>
           </div>
         </div>
@@ -348,7 +353,7 @@
               <div id="appDetailTags" class="small text-secondary"></div>
             </div>
 
-            <h3 id="appDetailTitle" class="h5 mb-2"></h3>
+            <h3 id="appDetailTitle" class="h4 mb-2" data-i18n="placeholder.appTitle">Anwendungstitel</h3>
             <p id="appDetailDesc" class="mb-3 text-secondary"></p>
 
             <div id="appDetailBody" class="mb-3"><!-- lange Beschreibung (HTML) --></div>
@@ -438,7 +443,7 @@
           </div>
 
           <!-- What is an application -->
-          <h3 class="h5 section-title mt-5 mb-3" data-i18n="odi.appDefTitle">Was ist eine Anwendung?</h3>
+          <h3 class="h4 section-title mt-5 mb-3" data-i18n="odi.appDefTitle">Was ist eine Anwendung?</h3>
           <div class="card card-border">
             <div class="card-body">
               <p class="mb-0" data-i18n="odi.appDefText">Im Portal ist eine Anwendung ein digitaler Dienst, der offene Daten nutzt, um ein Problem zu lösen: zum Beispiel Karten, Dashboards oder Such-Tools. Anwendungen kombinieren Datenquellen, fügen Logik hinzu und bereiten die Inhalte so auf, dass Bürgerinnen, Unternehmen und Entwickler sie direkt nutzen können.</p>
@@ -446,7 +451,7 @@
           </div>
 
           <!-- Tags Section -->
-          <h3 class="h5 section-title mt-5 mb-3" id="tags-explanation" data-i18n="odi.tagsTitle">Erklärung der Tags in Anwendungen</h3>
+          <h3 class="h4 section-title mt-5 mb-3" id="tags-explanation" data-i18n="odi.tagsTitle">Erklärung der Tags in Anwendungen</h3>
           <div class="card card-border">
             <div class="card-body">
               <p data-i18n="odi.tagsIntro">Tags helfen Ihnen, Anwendungen nach ihren Eigenschaften und Funktionen zu filtern. Hier ist eine Erklärung aller verfügbaren Tags:</p>
@@ -616,7 +621,7 @@
           </div>
           <div class="card card-border">
             <div class="card-body">
-              <h2 id="detailTitle" class="h4 mb-2"></h2>
+              <h2 id="detailTitle" class="h4 mb-2" data-i18n="placeholder.detailTitle">Titel</h2>
               <div id="detailMeta" class="small text-secondary mb-3"></div>
               <div id="detailBody" class="mb-3"></div>
               <div id="detailActions" class="d-flex flex-wrap gap-2"></div>
@@ -644,7 +649,7 @@
         <img class="blog-img" alt="">
         <div class="card-body d-flex flex-column">
           <div class="mb-2 small text-secondary"><i class="bi bi-calendar3 me-1" aria-hidden="true"></i><span class="blog-date"></span></div>
-          <h4 class="h6 blog-title mb-2"></h4>
+          <h4 class="h6 blog-title mb-2" data-i18n="placeholder.blogTitle">Beitragstitel</h4>
           <p class="blog-excerpt flex-grow-1"></p>
           <div class="mt-2 d-flex gap-1 flex-wrap blog-tags"></div>
           <div class="mt-3 d-flex gap-2">
@@ -659,7 +664,7 @@
     <div class="card card-border">
       <div class="card-body d-flex flex-column flex-md-row align-items-start gap-3">
         <div class="flex-grow-1">
-          <h4 class="h6 m-0 dataset-title"></h4>
+          <h4 class="h6 m-0 dataset-title" data-i18n="placeholder.datasetTitle">Datensatz</h4>
           <div class="small text-secondary mt-1 dataset-meta"></div>
         </div>
         <div class="d-flex gap-2">
@@ -687,7 +692,7 @@
     <span class="app-rating-star" aria-hidden="true">★</span>
   </div>
 </div>
-        <h4 class="h6 app-title mb-2"></h4>
+        <h4 class="h6 app-title mb-2" data-i18n="placeholder.appTitle">Anwendung</h4>
         <p class="app-desc flex-grow-1"></p>
         <div class="mt-3 d-flex gap-2">
           <a class="btn btn-outline-primary btn-sm app-detail" href="#" data-app-id="">
@@ -711,7 +716,8 @@
         nav:{general:"Überblick", datasets:"Datensätze", apps:"Anwendungen", info:"Erklärung Open Data", contact:"Kontaktformular"},
         general:{
           title:"Willkommen im Open Data Portal der Landeshauptstadt Dresden",
-          intro:"Entdecken Sie offene Daten, Anwendungen und Initiativen rund um Open Data in Dresden. Nutzen Sie die Suche, um in allen Bereichen zu finden.",
+          subtitle:"Entdecken Sie offene Daten, Anwendungen und Initiativen rund um Open Data in Dresden.",
+          intro:"Nutzen Sie die Suche, um in allen Bereichen Ergebnisse zu finden.",
           quicklinks:"Schnellzugriff", toDatasets:"Zu den Datenbeständen", toApps:"Zu den Anwendungen", toContact:"Kontakt aufnehmen",
           simpleToggle:"Einfache Sprache", simpleHint:"Sie lesen den Text in einfacher Sprache.",
           simple1:"Hier finden Sie Daten der Stadt. Daten sind Informationen. Zum Beispiel: Zahlen, Listen, Karten.",
@@ -825,7 +831,8 @@ statusMap: { active: "Aktiv", inactive: "Inaktiv" }
         nav:{general:"Overview", datasets:"Datasets", apps:"Applications", info:"Open Data Explained", contact:"Contact Form"},
         general:{
           title:"Welcome to Dresden's Open Data Portal",
-          intro:"Discover open data, apps, and initiatives around open government data in Dresden. Use the search to find across all sections.",
+          subtitle:"Discover open data, applications, and initiatives around open data in Dresden.",
+          intro:"Use the search to find results across all sections.",
           quicklinks:"Quick links", toDatasets:"Go to datasets", toApps:"Go to applications", toContact:"Get in touch",
           simpleToggle:"Easy language", simpleHint:"You are reading easy language.",
           simple1:"Here you find city data. Data are information. For example: numbers, lists, maps.",
@@ -2545,7 +2552,7 @@ function statusKeyFromMeta(meta){
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">&nbsp;</h5>
+          <h4 class="modal-title">&nbsp;</h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -2564,7 +2571,7 @@ function statusKeyFromMeta(meta){
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">&nbsp;</h5>
+          <h4 class="modal-title">&nbsp;</h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -2586,4 +2593,6 @@ function statusKeyFromMeta(meta){
 
 </body>
 </html>
+
+
 
