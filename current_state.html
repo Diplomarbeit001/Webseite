@@ -1,0 +1,2588 @@
+<!doctype html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dresden Open Data Portal – Final</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    :root{
+      --dresden-gold:#F3AC26; --dresden-black:#000; --dresden-gray-900:#343a40;
+      --dresden-gray-700:#495057; --dresden-gray-200:#e9ecef; --dresden-gray-100:#f8f9fa;
+      --bs-primary:var(--dresden-gold); --bs-primary-rgb:243,172,38; --bs-dark:var(--dresden-black);
+      --bs-body-color:var(--dresden-gray-900); --bs-link-color:var(--dresden-black);
+      --bs-border-color:var(--dresden-gray-200);
+    }
+    .brand-bar{background:var(--dresden-black);color:#fff}
+    .brand-bar .logo-dot{width:12px;height:12px;border-radius:50%;background:var(--dresden-gold);display:inline-block;margin-right:.5rem}
+    .nav-link{font-weight:600}
+    .navbar-nav{gap:1rem}
+    .navbar-nav .nav-link{padding:.75rem 1.5rem}
+    .nav-link.active{color:var(--dresden-black)!important;border-bottom:3px solid var(--dresden-gold)}
+    .navbar .nav-link:hover{color:var(--dresden-black);background:rgba(243,172,38,.15);border-radius:.5rem}
+    section{display:none}.active{display:block}
+    .section-title{position:relative;padding-left:.75rem}
+    .section-title::before{content:"";position:absolute;left:0;top:.25rem;bottom:.25rem;width:4px;background:var(--dresden-gold);border-radius:4px}
+    .card-border{border:1px solid var(--dresden-gray-200);box-shadow:0 1px 3px rgba(0,0,0,.04)}
+    .card-border::after{content:"";display:block;height:3px;background:var(--dresden-gold);opacity:.35}
+    .badge-category{background:var(--dresden-gold);color:var(--dresden-black)}
+    .simple-chip{display:inline-flex;align-items:center;gap:.35rem;font-size:.85rem;background:rgba(243,172,38,.2);color:var(--dresden-black);padding:.25rem .5rem;border-radius:999px}
+    .blog-img{width:100%;height:180px;object-fit:cover;cursor:pointer}
+    /* Anwendungen: Detailansicht fokussieren */
+    .apps-detail-mode .apps-filters-col{display:none}
+    .apps-detail-mode .apps-content-col{margin-left:auto;margin-right:auto;max-width:960px}
+    .apps-detail-mode .apps-toolbar{display:none!important}
+    .reviews-heading{background:rgba(243,172,38,.18);padding:.65rem .75rem;border-radius:.5rem;font-size:1.05rem;font-weight:700}
+    #appsBackBtn{gap:.4rem;font-weight:700}
+    .app-status-badge{font-weight:700}
+    .tags-explain{display:inline-flex;align-items:center;gap:.35rem;font-weight:700;font-size:.95rem;color:var(--dresden-black);padding:.35rem .6rem;border-radius:.5rem;background:rgba(243,172,38,.18);text-decoration:none}
+    .tags-explain:hover{color:var(--dresden-black);background:rgba(243,172,38,.3)}
+    @media (min-width: 992px){ .sticky-sidebar{ position: static; top: 6rem; } }
+    /* --- Anwendungen: Cards + Detail --- */
+.app-thumb{width:100%;height:140px;object-fit:cover;object-position:top;border-radius:.5rem;}
+@media(min-width: 768px){ .app-thumb{height:120px;} }
+.app-hero{width:100%;max-height:370px;object-fit:cover;object-position:top ;border-radius:.75rem;margin-bottom:1rem;}
+.apps-quick-contact .btn { white-space: normal; }
+.app-rating {
+  gap: .25rem;
+  font-weight: 700;
+}
+.app-rating .app-rating-value {
+  color: #000;           /* Zahl schwarz */
+}
+.app-rating .app-rating-star {
+  color: #f5c518;        /* Stern gold (IMDb-amber) */
+}
+.meta-table th{width:210px;white-space:nowrap}
+/* --- Bewertungen: Sterne statisch, ohne Springen --- */
+.rating-stars{
+  display: inline-flex;
+  gap: .25rem;
+  white-space: nowrap;
+  user-select: none;
+  vertical-align: middle;
+}
+
+.rating-stars button{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Fixe Box verhindert Layout-Shift */
+  width: 2rem;
+  height: 2rem;
+
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+
+  /* stabile Typo */
+  font-size: 1.5rem;
+  line-height: 1;
+  letter-spacing: 0;
+
+  color: #c0c4c7; /* neutral */
+  outline: none;
+  box-shadow: none;
+}
+
+/* Kein optischer Effekt, der die Boxgröße ändert */
+.rating-stars button:focus{
+  outline: none;
+  box-shadow: none;
+}
+
+/* Optional: sichtbarer, aber layout-freier Fokus */
+.rating-stars button:focus-visible{
+  outline: 2px solid var(--dresden-gold);
+  outline-offset: 2px;
+}
+
+.rating-stars button.active,
+.rating-stars button:hover{
+  color: var(--dresden-gold);
+}
+.review-item{border-top:1px solid var(--bs-border-color);padding-top:.75rem;margin-top:.75rem}
+
+  </style>
+</head>
+<body>
+  <!-- Brand Bar -->
+  <div class="brand-bar py-2">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-2">
+        <span class="logo-dot" aria-hidden="true"></span>
+        <strong style="font-size: 1.21rem;" data-i18n="brand">Open Data Portal Dresden</strong>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-globe"></i>
+        <div class="btn-group btn-group-sm" role="group" aria-label="Language selector">
+          <button type="button" id="langDE" class="btn btn-outline-secondary lang-btn" data-lang="de" title="Deutsch">DE</button>
+          <button type="button" id="langEN" class="btn btn-outline-secondary lang-btn" data-lang="en" title="English">ENG</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Centered Nav -->
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom" style="padding: 0.935rem 0;">
+    <div class="container">
+      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-center" id="mainNav">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 text-center">
+          <li class="nav-item"><a class="nav-link" style="font-size: 1.155rem;" href="#allgemeines" data-i18n="nav.general">Allgemeines</a></li>
+          <li class="nav-item"><a class="nav-link" style="font-size: 1.155rem;" href="#datenbestaende" data-i18n="nav.datasets">Datensätze</a></li>
+          <li class="nav-item"><a class="nav-link" style="font-size: 1.155rem;" href="#anwendungen" data-i18n="nav.apps">Anwendungen</a></li>
+          <li class="nav-item"><a class="nav-link" style="font-size: 1.155rem;" href="#open-data-info" data-i18n="nav.info">Open Data Info</a></li>
+          <li class="nav-item"><a class="nav-link" style="font-size: 1.155rem;" href="#kontakt" data-i18n="nav.contact">Kontakt</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <!-- Allgemeines -->
+    <section id="section-allgemeines" class="active">
+      <div class="row g-4 justify-content-center">
+        <div class="col-12 col-lg-10">
+          <div class="card card-border">
+            <div class="card-body">
+              <div class="d-flex align-items-center justify-content-between">
+                <h2 class="h4 mb-3 section-title" data-i18n="general.title">Willkommen im Open Data Portal der Landeshauptstadt Dresden</h2>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="toggleSimpleGeneral" />
+                  <label class="form-check-label" for="toggleSimpleGeneral" data-i18n="general.simpleToggle">Einfache Sprache</label>
+                </div>
+              </div>
+              <p class="mb-4" data-i18n="general.intro">Entdecken Sie offene Daten, Anwendungen und Initiativen rund um Open Data in Dresden. Nutzen Sie die Suche, um in allen Bereichen zu finden.</p>
+              <div id="generalSimple" class="d-none">
+                <p class="simple-chip"><i class="bi bi-info-circle" aria-hidden="true"></i><span data-i18n="general.simpleHint">Sie lesen den Text in einfacher Sprache.</span></p>
+                <p data-i18n="general.simple1">Hier finden Sie Daten der Stadt. Daten sind Informationen. Zum Beispiel: Zahlen, Listen, Karten.</p>
+                <p data-i18n="general.simple2">Sie können suchen. Sie können Apps ansehen. Apps zeigen Daten als Karten oder Diagramme.</p>
+              </div>
+
+              <!-- Global Search -->
+              <form id="globalSearchForm" class="mb-3" role="search">
+                <div class="input-group input-group-lg">
+                  <span class="input-group-text bg-dresden-gold text-dresden-black"><i class="bi bi-search" aria-hidden="true"></i></span>
+                  <input id="globalSearchInput" type="search" class="form-control" placeholder="Suche nach Daten, Anwendungen, Beiträgen…" data-i18n-placeholder="search.placeholder" aria-label="Suche" />
+                  <button class="btn btn-primary" type="submit" data-i18n="search.go">Suchen</button>
+                </div>
+              </form>
+
+              <div id="globalSearchResults" class="d-none">
+                <h3 class="h6 text-uppercase text-dresden-black" data-i18n="search.results">Suchergebnisse</h3>
+                <div id="resultsContainer" class="vstack gap-2"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Blog Feed 2-column with images -->
+          <div class="mt-4">
+            <h3 class="h5 mb-3 section-title" data-i18n="blog.title">Aktuelles: Open-Data-Projekte & Initiativen</h3>
+            <div id="blogFeed" class="row g-3"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Datenbestände -->
+    <section id="section-datenbestaende">
+      <div class="row g-4">
+        <div class="col-12 col-lg-3">
+          <div class="card card-border sticky-sidebar">
+            <div class="card-body">
+              <h2 class="h6 section-title" data-i18n="datasets.filters">Suche & Filter</h2>
+              <input id="datasetSearch" type="search" class="form-control mb-3" placeholder="Datensatz suchen…" data-i18n-placeholder="datasets.searchPlaceholder" aria-label="Datensatzsuche" />
+              <div class="mb-3">
+                <label class="form-label" for="datasetCategory" data-i18n="datasets.category">Kategorie</label>
+                <select id="datasetCategory" class="form-select">
+                  <option value="" selected data-i18n="datasets.all">Alle</option>
+                  <option value="Verkehr" data-i18n="cat.transport">Verkehr</option>
+                  <option value="Umwelt" data-i18n="cat.environment">Umwelt</option>
+                  <option value="Verwaltung" data-i18n="cat.admin">Verwaltung</option>
+                  <option value="Kultur" data-i18n="cat.culture">Kultur</option>
+                </select>
+              </div>
+              <button id="datasetReset" class="btn btn-outline-primary w-100" data-i18n="datasets.reset">Zurücksetzen</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-9">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+  <h2 class="h4 m-0 section-title" data-i18n="datasets.title">Datenbestände</h2>
+
+  <!-- Pro-Seite-Auswahl -->
+  <div class="d-flex align-items-center gap-2">
+    <label for="datasetPageSize" class="form-label m-0 small" data-i18n="datasets.perPage">Pro Seite</label>
+    <select id="datasetPageSize" class="form-select form-select-sm w-auto">
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="20">20</option>
+    </select>
+    <span id="datasetCount" class="badge text-bg-dark"></span>
+  </div>
+</div>
+
+<!-- Ergebnisliste -->
+<div id="datasetRegister" class="vstack gap-3"></div>
+
+<!-- Pagination -->
+<nav aria-label="Seiten-Navigation" class="mt-3">
+  <ul id="datasetPagination" class="pagination pagination-sm mb-0"></ul>
+</nav>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Anwendungen -->
+    <section id="section-anwendungen" aria-label="Anwendungen">
+  <div class="row g-4">
+    <!-- Sidebar / Filter -->
+    <div id="appsFiltersCol" class="col-12 col-lg-3 apps-filters-col">
+      <div class="card card-border sticky-sidebar">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between">
+            <h2 class="h6 section-title" data-i18n="apps.filters">Filter</h2>
+            <button id="appsReset" class="btn btn-sm btn-outline-primary" data-i18n="apps.reset">Zurücksetzen</button>
+          </div>
+
+          <div class="mt-3">
+            <label class="form-label" for="appsSearch" data-i18n="apps.searchLabel">Suche</label>
+            <input id="appsSearch" type="search" class="form-control"
+                   placeholder="Anwendungen durchsuchen…"
+                   data-i18n-placeholder="apps.searchPlaceholder"
+                   aria-label="App-Suche" />
+          </div>
+          <!-- Neu: Status-Filter -->
+
+
+<div class="mt-3">
+  <div class="form-check form-switch">
+    <input id="appsActiveOnly" class="form-check-input" type="checkbox" checked>
+    <label class="form-check-label" for="appsActiveOnly" data-i18n="apps.activeOnly.label">Nur aktive anzeigen</label>
+  </div>
+  <small class="text-muted" data-i18n="apps.activeOnly.help">Deaktivieren, um auch archivierte zu sehen.</small>
+  <div id="appsInactiveInfo" class="small text-muted d-none"></div>
+</div>
+
+          <div class="mt-3">
+            <label class="form-label" data-i18n="apps.categories">Kategorien</label>
+            <div id="appsCategories" class="vstack gap-2"></div>
+          </div>
+
+          <div class="mt-3">
+            <label class="form-label" data-i18n="apps.tags">Tags</label>
+            <div id="appsTags" class="d-flex flex-wrap gap-2"></div>
+            <a href="#open-data-info" class="tags-explain mt-2" onclick="setTimeout(() => { const el = document.getElementById('tags-explanation'); if(el) el.scrollIntoView({behavior: 'smooth'}); }, 100)"><i class="bi bi-info-circle"></i><span data-i18n="apps.tagsExplain">Explanation of Tags</span></a>
+          </div>
+
+          <hr class="my-3">
+
+<div class="apps-quick-contact">
+  <a id="appsContactBtn" href="#kontakt" class="btn btn-primary w-100">
+    <i class="bi bi-envelope me-1" aria-hidden="true"></i>
+    <span data-i18n="apps.contactCTA">Fragen zu den Anwendungen?</span>
+  </a>
+</div>
+
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Content: Liste ODER Detail -->
+    <div id="appsContentCol" class="col-12 col-lg-9 apps-content-col">
+  <div class="d-flex align-items-center justify-content-between mb-2">
+  <h2 class="h4 m-0 section-title" data-i18n="apps.title">Anwendungen</h2>
+  <div class="d-flex align-items-center gap-2 apps-toolbar">
+    <label for="appsSort" class="form-label m-0 small" data-i18n="apps.sort.label">Sortieren</label>
+    <select id="appsSort" class="form-select form-select-sm w-auto">
+      <option value="relevance" data-i18n="apps.sort.options.relevance">Relevanz</option>
+      <option value="newest"   data-i18n="apps.sort.options.newest">Neueste</option>
+      <option value="oldest"   data-i18n="apps.sort.options.oldest">Älteste</option>
+      <option value="az"       data-i18n="apps.sort.options.az">A–Z</option>
+    </select>
+
+
+    <label for="appsPageSize" class="form-label m-0 small" data-i18n="apps.perPage">Pro Seite</label>
+    <select id="appsPageSize" class="form-select form-select-sm w-auto">
+      <option value="5">5</option>
+      <option value="10" selected>10</option>
+      <option value="20">20</option>
+    </select>
+    <span id="appsCount" class="badge text-bg-dark"></span>
+  </div>
+</div>
+
+<!-- Listenansicht -->
+<div id="appsListView">
+  <div id="appsList" class="row g-3"></div>
+
+  
+
+  <!-- NEU: Pagination -->
+  <nav aria-label="Seiten-Navigation" class="mt-3">
+    <ul id="appsPagination" class="pagination pagination-sm mb-0"></ul>
+  </nav>
+</div>
+
+      <!-- Detailansicht -->
+      <div id="appsDetailView" class="d-none">
+        <button id="appsBackBtn" class="btn btn-primary btn-sm d-inline-flex align-items-center mb-3 shadow-sm">
+          ← <span data-i18n="apps.back">Zurück zur Übersicht</span>
+        </button>
+
+        <div class="card card-border">
+          <div class="card-body">
+            <img id="appDetailImage" class="app-hero" src="" alt="" />
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span id="appDetailCategory" class="badge badge-category"></span>
+              <div id="appDetailTags" class="small text-secondary"></div>
+            </div>
+
+            <h3 id="appDetailTitle" class="h5 mb-2"></h3>
+            <p id="appDetailDesc" class="mb-3 text-secondary"></p>
+
+            <div id="appDetailBody" class="mb-3"><!-- lange Beschreibung (HTML) --></div>
+
+            <!-- Meta-Tabelle -->
+            <div class="table-responsive">
+              <table class="table table-sm meta-table">
+                <tbody id="appDetailMeta"></tbody>
+              </table>
+            </div>
+
+            <a id="appDetailOpen" target="_blank" rel="noopener"
+               class="btn btn-primary btn-lg w-100 mt-2">
+              <i class="bi bi-box-arrow-up-right me-1"></i>
+              <span data-i18n="apps.openCta">Hier geht’s zur Anwendung</span>
+            </a>
+
+            <!-- Bewertungen & Kommentare -->
+            <div id="appReviews" class="mt-4">
+              <h4 class="h6 mb-2 reviews-heading" data-i18n="apps.reviews">Bewertungen & Kommentare</h4>
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="text-secondary" data-i18n="apps.averageRating">Durchschnitt</span>:
+                <strong id="appAvg">–</strong>
+                <span class="text-secondary" id="appCount"></span>
+              </div>
+
+              <form id="reviewForm" class="vstack gap-2">
+                <div>
+                  <label class="form-label" data-i18n="apps.yourRating">Ihre Bewertung</label>
+                  <div class="rating-stars" id="ratingStars" aria-label="Bewertung">
+                    <button type="button" data-val="1" aria-label="1">★</button>
+                    <button type="button" data-val="2" aria-label="2">★</button>
+                    <button type="button" data-val="3" aria-label="3">★</button>
+                    <button type="button" data-val="4" aria-label="4">★</button>
+                    <button type="button" data-val="5" aria-label="5">★</button>
+                  </div>
+                </div>
+                <div class="row g-2">
+                  <div class="col-md-4">
+                    <label for="reviewName" class="form-label" data-i18n="apps.name">Name</label>
+                    <input id="reviewName" class="form-control" />
+                  </div>
+                  <div class="col-md-8">
+                    <label for="reviewComment" class="form-label" data-i18n="apps.comment">Kommentar</label>
+                    <textarea id="reviewComment" class="form-control" rows="2"></textarea>
+                  </div>
+                </div>
+                <button id="submitReview" class="btn btn-outline-primary align-self-start" type="submit" data-i18n="apps.submitReview">Bewertung absenden</button>
+              </form>
+
+              <div id="reviewsList" class="mt-3">
+                <div id="noComments" class="text-secondary" data-i18n="apps.noComments">Noch keine Kommentare.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /Detail -->
+    </div>
+  </div>
+
+  
+</section>
+
+
+    
+
+    <!-- Open Data Info (Leichte Sprache) -->
+    <section id="section-open-data-info">
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-9">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <h2 class="h4 m-0 section-title" data-i18n="odi.title">Open Data: einfach erklärt</h2>
+            <span class="simple-chip"><i class="bi bi-emoji-smile" aria-hidden="true"></i><span data-i18n="odi.simple">Einfache Sprache</span></span>
+          </div>
+          <div class="card card-border">
+            <div class="card-body">
+              <p data-i18n="odi.p1">Open Data bedeutet: Daten sind frei. Jeder Mensch darf die Daten lesen, nutzen und teilen.</p>
+              <p data-i18n="odi.p2">Die Stadt sammelt viele Daten. Zum Beispiel: Bus-Fahrzeiten, Luft-Werte, Orte von Ämtern.</p>
+              <p data-i18n="odi.p3">Mit Open Data können Sie Neues bauen: Karten, Apps oder Texte. Das hilft allen.</p>
+              <ul>
+                <li data-i18n="odi.l1">Sie müssen keine Erlaubnis fragen.</li>
+                <li data-i18n="odi.l2">Sie nennen die Quelle.</li>
+                <li data-i18n="odi.l3">Sie achten auf den Schutz von Personen.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- What is an application -->
+          <h3 class="h5 section-title mt-5 mb-3" data-i18n="odi.appDefTitle">Was ist eine Anwendung?</h3>
+          <div class="card card-border">
+            <div class="card-body">
+              <p class="mb-0" data-i18n="odi.appDefText">Im Portal ist eine Anwendung ein digitaler Dienst, der offene Daten nutzt, um ein Problem zu lösen: zum Beispiel Karten, Dashboards oder Such-Tools. Anwendungen kombinieren Datenquellen, fügen Logik hinzu und bereiten die Inhalte so auf, dass Bürgerinnen, Unternehmen und Entwickler sie direkt nutzen können.</p>
+            </div>
+          </div>
+
+          <!-- Tags Section -->
+          <h3 class="h5 section-title mt-5 mb-3" id="tags-explanation" data-i18n="odi.tagsTitle">Erklärung der Tags in Anwendungen</h3>
+          <div class="card card-border">
+            <div class="card-body">
+              <p data-i18n="odi.tagsIntro">Tags helfen Ihnen, Anwendungen nach ihren Eigenschaften und Funktionen zu filtern. Hier ist eine Erklärung aller verfügbaren Tags:</p>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <h6 class="fw-bold mb-1"><span class="badge bg-primary me-2" data-i18n="tags.name.Karte">Karte</span></h6>
+                    <p class="small text-secondary m-0" data-i18n="tags.desc.Karte">Anwendung zeigt Daten auf einer geografischen Karte. Ideal für ortsgebundene Informationen wie Standorte, Routen oder regionale Verteilungen.</p>
+                  </div>
+                  <div class="mb-3">
+                    <h6 class="fw-bold mb-1"><span class="badge bg-primary me-2" data-i18n="tags.name.Echtzeit">Echtzeit</span></h6>
+                    <p class="small text-secondary m-0" data-i18n="tags.desc.Echtzeit">Die Daten werden in Echtzeit oder in sehr kurzen Intervallen aktualisiert. Beispiele: Live-Verkehrsinformationen, aktuelle Messwerte.</p>
+                  </div>
+                  <div class="mb-3">
+                    <h6 class="fw-bold mb-1"><span class="badge bg-primary me-2" data-i18n="tags.name.Diagramm">Diagramm</span></h6>
+                    <p class="small text-secondary m-0" data-i18n="tags.desc.Diagramm">Daten werden in Form von Diagrammen, Grafiken oder Visualisierungen dargestellt. Hilft bei der schnellen Erfassung von Trends und Mustern.</p>
+                  </div>
+                  <div class="mb-3">
+                    <h6 class="fw-bold mb-1"><span class="badge bg-primary me-2" data-i18n="tags.name.CSV">CSV</span></h6>
+                    <p class="small text-secondary m-0" data-i18n="tags.desc.CSV">Die Daten liegen im CSV-Format vor. Dieses Format ist weit verbreitet und kann in Tabellenkalkulationen wie Excel leicht importiert werden.</p>
+                  </div>
+                  <div class="mb-3">
+                    <h6 class="fw-bold mb-1"><span class="badge bg-primary me-2" data-i18n="tags.name.POI">POI</span></h6>
+                    <p class="small text-secondary m-0" data-i18n="tags.desc.POI">Point of Interest – Die Anwendung zeigt oder nutzt Punkte von Interesse, wie Geschäfte, Sehenswürdigkeiten oder öffentliche Einrichtungen.</p>
+                  </div>
+                  <div class="mb-3">
+                    <h6 class="fw-bold mb-1"><span class="badge bg-primary me-2" data-i18n="tags.name.Service">Service</span></h6>
+                    <p class="small text-secondary m-0" data-i18n="tags.desc.Service">Die Anwendung bietet ein praktisches Service oder Tool, das häufig in Echtzeit funktioniert und unmittelbar nützlich ist.</p>
+                  </div>
+                  <div class="mb-3">
+                    <h6 class="fw-bold mb-1"><span class="badge bg-primary me-2" data-i18n="tags.name.Formulare">Formulare</span></h6>
+                    <p class="small text-secondary m-0" data-i18n="tags.desc.Formulare">Mit dieser Anwendung können Sie Formulare ausfüllen und einsenden, zum Beispiel für Meldungen oder Anfragen.</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <h6 class="fw-bold mb-1"><span class="badge bg-primary me-2" data-i18n="tags.name.OpenRoute">OpenRoute</span></h6>
+                    <p class="small text-secondary m-0" data-i18n="tags.desc.OpenRoute">Die Anwendung nutzt OpenStreetMap oder ähnliche offene Routing-Dienste für Navigations- und Routenplanungsfunktionen.</p>
+                  </div>
+                  <div class="mb-3">
+                    <h6 class="fw-bold mb-1"><span class="badge bg-primary me-2" data-i18n="tags.name.Zeitreihe">Zeitreihe</span></h6>
+                    <p class="small text-secondary m-0" data-i18n="tags.desc.Zeitreihe">Daten werden als zeitliche Abfolge dargestellt und ermöglichen die Analyse von Entwicklungen über einen Zeitraum.</p>
+                  </div>
+                  <div class="mb-3">
+                    <h6 class="fw-bold mb-1"><span class="badge bg-primary me-2" data-i18n="tags.name.Kalender">Kalender</span></h6>
+                    <p class="small text-secondary m-0" data-i18n="tags.desc.Kalender">Die Anwendung zeigt Termine, Veranstaltungen oder zeitliche Abläufe in Kalenderform.</p>
+                  </div>
+                  <div class="mb-3">
+                    <h6 class="fw-bold mb-1"><span class="badge bg-primary me-2" data-i18n="tags.name.Adressen">Adressen</span></h6>
+                    <p class="small text-secondary m-0" data-i18n="tags.desc.Adressen">Die Anwendung enthält oder nutzt Adressdaten, wie z.B. Behördenadressen, Geschäftsadressen oder Standorte.</p>
+                  </div>
+                  <div class="mb-3">
+                    <h6 class="fw-bold mb-1"><span class="badge bg-primary me-2" data-i18n="tags.name.API">API</span></h6>
+                    <p class="small text-secondary m-0" data-i18n="tags.desc.API">Eine API (Programmierschnittstelle) ist vorhanden, die es Entwicklern ermöglicht, Daten programmatisch zu nutzen.</p>
+                  </div>
+                  <div class="mb-3">
+                    <h6 class="fw-bold mb-1"><span class="badge bg-primary me-2" data-i18n="tags.name.Raster">Raster</span></h6>
+                    <p class="small text-secondary m-0" data-i18n="tags.desc.Raster">Daten liegen in Rasterformat vor (Bilder, Satellitenaufnahmen). Wird häufig für geografische oder Sensordaten verwendet.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kontakt -->
+    <section id="section-kontakt">
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+          <div class="card card-border">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h2 class="h4 section-title mb-0" data-i18n="contact.title">Kontakt</h2>
+                <span class="small text-secondary"><span class="text-danger fw-bold">*</span> <span data-i18n="contact.requiredHint">Pflichtfelder</span></span>
+              </div>
+              <p class="text-secondary" data-i18n="contact.desc">Schreiben Sie uns Ihr Anliegen. Wir melden uns zeitnah.</p>
+
+              <form id="contactForm" class="vstack gap-3 needs-validation" novalidate enctype="multipart/form-data">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="contactFirstName" class="form-label"><span data-i18n="contact.firstName">Vorname</span> <span class="text-danger">*</span></label>
+                    <input type="text" id="contactFirstName" class="form-control" required minlength="2">
+                    <div class="invalid-feedback" data-i18n="contact.errFirstName">Bitte geben Sie Ihren Vornamen an (min. 2 Zeichen).</div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="contactLastName" class="form-label"><span data-i18n="contact.lastName">Nachname</span> <span class="text-danger">*</span></label>
+                    <input type="text" id="contactLastName" class="form-control" required minlength="2">
+                    <div class="invalid-feedback" data-i18n="contact.errLastName">Bitte geben Sie Ihren Nachnamen an (min. 2 Zeichen).</div>
+                  </div>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="contactEmail" class="form-label"><span data-i18n="contact.email">E-Mail</span> <span class="text-danger">*</span></label>
+                    <input type="email" id="contactEmail" class="form-control" required>
+                    <div class="invalid-feedback" data-i18n="contact.errEmail">Bitte geben Sie eine gültige E-Mail an (mit „@“).</div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="contactPhone" class="form-label" data-i18n="contact.phone">Telefon (optional)</label>
+                    <input type="tel" id="contactPhone" class="form-control" pattern="^[0-9+()\\s-]{6,}$">
+                    <div class="invalid-feedback" data-i18n="contact.errPhone">Bitte eine gültige Telefonnummer eingeben (mind. 6 Zeichen).</div>
+                  </div>
+                </div>
+
+                <div>
+                  <label for="contactTopic" class="form-label"><span data-i18n="contact.topic">Thema</span> <span class="text-danger">*</span></label>
+                  <select id="contactTopic" class="form-select" required>
+                    <option value="" disabled selected data-i18n="contact.choose">Bitte wählen…</option>
+                    <option value="dataset" data-i18n="contact.topics.dataset">Datenset</option>
+                    <option value="application" data-i18n="contact.topics.application">Anwendung</option>
+                    <option value="general" data-i18n="contact.topics.general">Allgemein</option>
+                  </select>
+                  <div class="invalid-feedback" data-i18n="contact.errTopic">Bitte wählen Sie ein Thema.</div>
+                </div>
+
+                <div>
+                  <div class="form-text mb-1" data-i18n="contact.messageHelp">Beschreiben Sie Ihr Anliegen möglichst konkret.</div>
+                  <label for="contactMsg" class="form-label"><span data-i18n="contact.message">Nachricht</span> <span class="text-danger">*</span></label>
+                  <textarea id="contactMsg" class="form-control" rows="6" required minlength="20"></textarea>
+                  <div class="invalid-feedback" data-i18n="contact.errMessage">Bitte beschreiben Sie Ihr Anliegen (≥ 20 Zeichen).</div>
+                </div>
+
+                <!-- Upload Block with per-element translations -->
+                <div id="contactUploadBlock" class="mb-2">
+                  <div class="form-text mb-1" data-i18n="contact.uploadHelp">Optionales Bild zur Erläuterung (z. B. Screenshot).</div>
+                  <input type="file" id="contactImage" class="visually-hidden" accept="image/png, image/jpeg">
+                  <div class="d-flex align-items-center gap-2">
+                    <label id="btnPickImage" for="contactImage" role="button" class="btn btn-outline-dark mb-0"
+                           data-t-de="Hier Bild hochladen" data-t-en="Upload image here"></label>
+                    <span id="fileName" class="text-secondary"
+                          data-empty="1" data-t-de="Kein Bild ausgewählt" data-t-en="No image selected"></span>
+                    <button id="btnClearImage" type="button" class="btn btn-link p-0 d-none"
+                            data-t-de="Entfernen" data-t-en="Remove"></button>
+                  </div>
+                  <div class="form-text" data-i18n="contact.imageHelp">Max. 4 MB. Formate: PNG oder JPG.</div>
+                  <div id="contactImageError" class="invalid-feedback d-block" style="display:none;"></div>
+                </div>
+
+                <!-- Success/Fail messages via data-t-* -->
+                <span id="msgSuccess" class="d-none" data-t-de="Vielen Dank! Ihre Nachricht wurde gesendet."
+                      data-t-en="Thank you! Your message has been sent."></span>
+                <span id="msgFail" class="d-none" data-t-de="Es gab ein Problem beim Senden. Bitte später erneut versuchen."
+                      data-t-en="There was a problem sending your message. Please try again later."></span>
+
+                <div id="contactAlert" class="alert d-none" role="alert"></div>
+
+                <div class="d-flex gap-2">
+                  <button id="contactSubmit" class="btn btn-primary" type="submit" data-i18n="contact.send">Senden</button>
+                  <button id="contactReset" class="btn btn-outline-dark" type="reset" data-i18n="contact.reset">Zurücksetzen</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detailansicht fÇÉr globale Suche -->
+    <section id="section-detail">
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-9">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span id="detailTypeBadge" class="badge bg-primary"></span>
+            <a id="detailBackLink" class="small text-decoration-none text-secondary" href="#allgemeines">ZurÇ¬ck</a>
+          </div>
+          <div class="card card-border">
+            <div class="card-body">
+              <h2 id="detailTitle" class="h4 mb-2"></h2>
+              <div id="detailMeta" class="small text-secondary mb-3"></div>
+              <div id="detailBody" class="mb-3"></div>
+              <div id="detailActions" class="d-flex flex-wrap gap-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-dark text-white py-4 mt-5">
+    <div class="container d-flex flex-column flex-lg-row align-items-center justify-content-between gap-2">
+      <div>&copy; <span id="year"></span> <span data-i18n="brand">Open Data Portal Dresden</span></div>
+      <nav class="d-flex gap-3">
+        <a class="text-white" href="#kontakt" data-i18n="footer.contact">Kontaktformular</a>
+        <a class="text-white" href="#impressum" data-i18n="footer.imprint">Impressum / Datenschutz</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- Templates -->
+  <template id="tpl-blog-card">
+    <div class="col-12 col-md-6">
+      <div class="card card-border h-100">
+        <img class="blog-img" alt="">
+        <div class="card-body d-flex flex-column">
+          <div class="mb-2 small text-secondary"><i class="bi bi-calendar3 me-1" aria-hidden="true"></i><span class="blog-date"></span></div>
+          <h4 class="h6 blog-title mb-2"></h4>
+          <p class="blog-excerpt flex-grow-1"></p>
+          <div class="mt-2 d-flex gap-1 flex-wrap blog-tags"></div>
+          <div class="mt-3 d-flex gap-2">
+            <a class="btn btn-outline-primary btn-sm blog-detail" href="#"></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-dataset-row">
+    <div class="card card-border">
+      <div class="card-body d-flex flex-column flex-md-row align-items-start gap-3">
+        <div class="flex-grow-1">
+          <h4 class="h6 m-0 dataset-title"></h4>
+          <div class="small text-secondary mt-1 dataset-meta"></div>
+        </div>
+        <div class="d-flex gap-2">
+          <a class="btn btn-outline-dark btn-sm dataset-link" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i><span data-i18n="common.open">Datensatz öffnen</span></a>
+          <a class="btn btn-outline-primary btn-sm dataset-detail" href="#"><i class="bi bi-file-text me-1"></i><span data-i18n="common.details">Metadaten öffnen</span></a>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-app-card">
+  <div class="col-12 col-md-6">
+    <div class="card card-border h-100">
+      <div class="card-body d-flex flex-column">
+        <img class="app-thumb mb-2" alt="" />
+        
+
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <span class="badge badge-category app-category"></span>
+          <span class="badge app-status-badge"></span>
+          <div class="small text-secondary app-tags"></div>
+        
+         <div class="app-rating ms-auto d-inline-flex align-items-center" title="Rating">
+    <span class="app-rating-value">—</span>
+    <span class="app-rating-star" aria-hidden="true">★</span>
+  </div>
+</div>
+        <h4 class="h6 app-title mb-2"></h4>
+        <p class="app-desc flex-grow-1"></p>
+        <div class="mt-3 d-flex gap-2">
+          <a class="btn btn-outline-primary btn-sm app-detail" href="#" data-app-id="">
+            <i class="bi bi-file-text me-1"></i><span data-i18n="apps.cardDetails">Mehr Informationen zur Anwendung</span>
+          </a>
+          <a class="btn btn-outline-dark btn-sm app-link" target="_blank" rel="noopener">
+            <i class="bi bi-box-arrow-up-right me-1"></i><span data-i18n="apps.cardOpen">Anwendung öffnen</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+
+  <script>
+    // ------------- I18N -------------
+    const I18N = {
+      de: {
+        brand:"Open Data Portal Dresden", language:"Sprache",
+        nav:{general:"Überblick", datasets:"Datensätze", apps:"Anwendungen", info:"Erklärung Open Data", contact:"Kontaktformular"},
+        general:{
+          title:"Willkommen im Open Data Portal der Landeshauptstadt Dresden",
+          intro:"Entdecken Sie offene Daten, Anwendungen und Initiativen rund um Open Data in Dresden. Nutzen Sie die Suche, um in allen Bereichen zu finden.",
+          quicklinks:"Schnellzugriff", toDatasets:"Zu den Datenbeständen", toApps:"Zu den Anwendungen", toContact:"Kontakt aufnehmen",
+          simpleToggle:"Einfache Sprache", simpleHint:"Sie lesen den Text in einfacher Sprache.",
+          simple1:"Hier finden Sie Daten der Stadt. Daten sind Informationen. Zum Beispiel: Zahlen, Listen, Karten.",
+          simple2:"Sie können suchen. Sie können Apps ansehen. Apps zeigen Daten als Karten oder Diagramme."
+        },
+        search:{ placeholder:"Suche nach Daten, Anwendungen, Beiträgen…", go:"Suchen", results:"Suchergebnisse", groupGeneral:"Beiträge", groupDatasets:"Datenbestände", groupApps:"Anwendungen", noResults:"Keine Treffer gefunden." },
+        blog:{ title:"Aktuelles: Open-Data-Projekte & Initiativen", details:"Mehr anzeigen" },
+        datasets:{
+          title:"Datenbestände",
+          filters:"Suche & Filter",
+          searchPlaceholder:"Datensatz suchen…",
+          category:"Kategorie",
+          all:"Alle",
+          reset:"Zurücksetzen",
+          perPage:"Pro Seite",
+          prev:"Zurück",
+          next:"Weiter"
+        },
+        datasetCatMap:{ Verkehr:"Verkehr", Umwelt:"Umwelt", Verwaltung:"Verwaltung", Kultur:"Kultur" },
+        cat:{ transport:"Verkehr", environment:"Umwelt", admin:"Verwaltung", culture:"Kultur" },
+        datasetModal:{
+          title:"Details zum Datensatz",
+          category:"Kategorie",
+          format:"Format",
+          updated:"Aktualisiert",
+          publisher:"Herausgeber",
+          records:"Einträge",
+          fields:"Felder",
+          summary:"Kurzbeschreibung",
+          open:"Datensatz öffnen"
+        },
+        apps:{ title:"Anwendungen", filters:"Filter", reset:"Zurücksetzen", searchLabel:"Suche", searchPlaceholder:"Anwendungen durchsuchen…", perPage:"Pro Seite", categories:"Kategorien", tags:"Tags", tagsExplain:"→ Erklärung der Tags", cardDetails:"Mehr Informationen zur Anwendung", cardOpen:"Anwendung öffnen",
+        back: "Zurück zur Übersicht",
+openCta: "Hier geht’s zur Anwendung",
+reviews: "Bewertungen & Kommentare",
+averageRating: "Durchschnitt",
+yourRating: "Ihre Bewertung",
+name: "Name",
+comment: "Kommentar",
+submitReview: "Bewertung absenden",
+noComments: "Noch keine Kommentare.",
+shareHeading: "Jetzt Anwendung teilen:",
+share: { facebook: "Facebook", x: "X", linkedin: "LinkedIn" },
+meta: {
+ status: "Status",
+  created: "Erstellungsdatum",
+  updated: "Letztes Update",
+  author: "Autor",
+  datasets: "Verwendete Datensätze",
+  formats: "Datenformate",
+  category: "Kategorie",
+  tags: "Tags",
+  license: "Lizenz",
+  tech: "Technologie-Stack"
+},
+activeOnly: {
+  label: "Nur aktive anzeigen",
+  help: "Deaktivieren, um auch archivierte zu sehen."
+},sort: {
+  label: "Sortieren",
+  options: {
+    relevance: "Relevanz",
+    newest: "Neueste",
+    oldest: "Älteste",
+    az: "A–Z"
+  }
+
+},contactCTA: "Fragen zu den Anwendungen?",
+statusMap: { active: "Aktiv", inactive: "Inaktiv" }
+},
+        contact:{
+          title:"Kontakt", desc:"Schreiben Sie uns Ihr Anliegen. Wir melden uns zeitnah.", requiredHint:"Pflichtfelder",
+          firstName:"Vorname", lastName:"Nachname", email:"E-Mail", phone:"Telefon (optional)",
+          topic:"Thema", topics:{dataset:"Datenset", application:"Anwendung", general:"Allgemein"}, choose:"Bitte wählen…",
+          message:"Nachricht", messageHelp:"Beschreiben Sie Ihr Anliegen möglichst konkret.",
+          imageHelp:"Max. 4 MB. Formate: PNG oder JPG.",
+          uploadHelp: "Optionales Bild zur Erläuterung (z. B. Screenshot).",
+          send:"Senden", reset:"Zurücksetzen",
+          errFirstName:"Bitte geben Sie Ihren Vornamen an (min. 2 Zeichen).",
+          errLastName:"Bitte geben Sie Ihren Nachnamen an (min. 2 Zeichen).",
+          errEmail:"Bitte geben Sie eine gültige E-Mail an (mit „@“).",
+          errPhone:"Bitte eine gültige Telefonnummer eingeben (mind. 6 Zeichen).",
+          errTopic:"Bitte wählen Sie ein Thema.",
+          errMessage:"Bitte beschreiben Sie Ihr Anliegen (≥ 20 Zeichen)."
+        },
+        odi:{ title:"Open Data: einfach erklärt", simple:"Einfache Sprache", p1:"Open Data bedeutet: Daten sind frei. Jeder Mensch darf die Daten lesen, nutzen und teilen.", p2:"Die Stadt sammelt viele Daten. Zum Beispiel: Bus-Fahrzeiten, Luft-Werte, Orte von Ämtern.", p3:"Mit Open Data können Sie Neues bauen: Karten, Apps oder Texte. Das hilft allen.", l1:"Sie müssen keine Erlaubnis fragen.", l2:"Sie nennen die Quelle.", l3:"Sie achten auf den Schutz von Personen.", appDefTitle:"Was ist eine Anwendung?", appDefText:"Im Portal ist eine Anwendung ein digitaler Dienst, der offene Daten nutzt, um ein Problem zu lösen: zum Beispiel Karten, Dashboards oder Such-Tools. Anwendungen kombinieren Datenquellen, fügen Logik hinzu und bereiten die Inhalte so auf, dass Bürgerinnen, Unternehmen und Entwickler sie direkt nutzen können.", tagsTitle:"Erklärung der Tags in Anwendungen", tagsIntro:"Tags helfen Ihnen, Anwendungen nach ihren Eigenschaften und Funktionen zu filtern. Hier ist eine Erklärung aller verfügbaren Tags:" },
+        imprint:{ title:"Impressum & Datenschutz", imprint:"Impressum", privacy:"Datenschutz", placeholder:"Angaben gemäß § 5 TMG – Platzhalter für Dienststelle, Anschrift, Vertretung, Kontakt.", privacyText:"Hinweise zur Verarbeitung personenbezogener Daten in diesem Portal – Platzhalter." },
+        footer:{ contact:"Kontaktformular", imprint:"Impressum / Datenschutz" },
+        common:{ open:"Öffnen", details:"Details" },
+        tags:{ name:{ "Karte":"Karte","Echtzeit":"Echtzeit","Diagramm":"Diagramm","CSV":"CSV","POI":"POI","Service":"Service","Formulare":"Formulare","OpenRoute":"OpenRoute","Zeitreihe":"Zeitreihe","Kalender":"Kalender","Adressen":"Adressen","API":"API","Raster":"Raster" }, desc:{ "Karte":"Anwendung zeigt Daten auf einer geografischen Karte. Ideal für ortsgebundene Informationen wie Standorte, Routen oder regionale Verteilungen.","Echtzeit":"Die Daten werden in Echtzeit oder in sehr kurzen Intervallen aktualisiert. Beispiele: Live-Verkehrsinformationen, aktuelle Messwerte.","Diagramm":"Daten werden in Form von Diagrammen, Grafiken oder Visualisierungen dargestellt. Hilft bei der schnellen Erfassung von Trends und Mustern.","CSV":"Die Daten liegen im CSV-Format vor. Dieses Format ist weit verbreitet und kann in Tabellenkalkulationen wie Excel leicht importiert werden.","POI":"Point of Interest – Die Anwendung zeigt oder nutzt Punkte von Interesse, wie Geschäfte, Sehenswürdigkeiten oder öffentliche Einrichtungen.","Service":"Die Anwendung bietet ein praktisches Service oder Tool, das häufig in Echtzeit funktioniert und unmittelbar nützlich ist.","Formulare":"Mit dieser Anwendung können Sie Formulare ausfüllen und einsenden, zum Beispiel für Meldungen oder Anfragen.","OpenRoute":"Die Anwendung nutzt OpenStreetMap oder ähnliche offene Routing-Dienste für Navigations- und Routenplanungsfunktionen.","Zeitreihe":"Daten werden als zeitliche Abfolge dargestellt und ermöglichen die Analyse von Entwicklungen über einen Zeitraum.","Kalender":"Die Anwendung zeigt Termine, Veranstaltungen oder zeitliche Abläufe in Kalenderform.","Adressen":"Die Anwendung enthält oder nutzt Adressdaten, wie z.B. Behördenadressen, Geschäftsadressen oder Standorte.","API":"Eine API (Programmierschnittstelle) ist vorhanden, die es Entwicklern ermöglicht, Daten programmatisch zu nutzen.","Raster":"Daten liegen in Rasterformat vor (Bilder, Satellitenaufnahmen). Wird häufig für geografische oder Sensordaten verwendet." } },
+        appCatMap:{ "Mobilität":"Mobilität","Umwelt":"Umwelt","Kultur":"Kultur","Verwaltung":"Verwaltung" },
+        tagMap:{ "Karte":"Karte","Echtzeit":"Echtzeit","Diagramm":"Diagramm","CSV":"CSV","POI":"POI","Service":"Service","Formulare":"Formulare","OpenRoute":"OpenRoute","Zeitreihe":"Zeitreihe","Kalender":"Kalender","Adressen":"Adressen","API":"API","Raster":"Raster" },
+        tagDescriptions:{
+          "Karte":"Anwendung zeigt Daten auf einer geografischen Karte. Ideal für ortsgebundene Informationen wie Standorte, Routen oder regionale Verteilungen.",
+          "Echtzeit":"Die Daten werden in Echtzeit oder in sehr kurzen Intervallen aktualisiert. Beispiele: Live-Verkehrsinformationen, aktuelle Messwerte.",
+          "Diagramm":"Daten werden in Form von Diagrammen, Grafiken oder Visualisierungen dargestellt. Hilft bei der schnellen Erfassung von Trends und Mustern.",
+          "CSV":"Die Daten liegen im CSV-Format vor. Dieses Format ist weit verbreitet und kann in Tabellenkalkulationen wie Excel leicht importiert werden.",
+          "POI":"Point of Interest – Die Anwendung zeigt oder nutzt Punkte von Interesse, wie Geschäfte, Sehenswürdigkeiten oder öffentliche Einrichtungen.",
+          "Service":"Die Anwendung bietet ein praktisches Service oder Tool, das häufig in Echtzeit funktioniert und unmittelbar nützlich ist.",
+          "Formulare":"Mit dieser Anwendung können Sie Formulare ausfüllen und einsenden, zum Beispiel für Meldungen oder Anfragen.",
+          "OpenRoute":"Die Anwendung nutzt OpenStreetMap oder ähnliche offene Routing-Dienste für Navigations- und Routenplanungsfunktionen.",
+          "Zeitreihe":"Daten werden als zeitliche Abfolge dargestellt und ermöglichen die Analyse von Entwicklungen über einen Zeitraum.",
+          "Kalender":"Die Anwendung zeigt Termine, Veranstaltungen oder zeitliche Abläufe in Kalenderform.",
+          "Adressen":"Die Anwendung enthält oder nutzt Adressdaten, wie z.B. Behördenadressen, Geschäftsadressen oder Standorte.",
+          "API":"Eine API (Programmierschnittstelle) ist vorhanden, die es Entwicklern ermöglicht, Daten programmatisch zu nutzen.",
+          "Raster":"Daten liegen in Rasterformat vor (Bilder, Satellitenaufnahmen). Wird häufig für geografische oder Sensordaten verwendet."
+        }
+      },
+      en: {
+        brand:"Open Data Portal Dresden", language:"Language",
+        nav:{general:"Overview", datasets:"Datasets", apps:"Applications", info:"Open Data Explained", contact:"Contact Form"},
+        general:{
+          title:"Welcome to Dresden's Open Data Portal",
+          intro:"Discover open data, apps, and initiatives around open government data in Dresden. Use the search to find across all sections.",
+          quicklinks:"Quick links", toDatasets:"Go to datasets", toApps:"Go to applications", toContact:"Get in touch",
+          simpleToggle:"Easy language", simpleHint:"You are reading easy language.",
+          simple1:"Here you find city data. Data are information. For example: numbers, lists, maps.",
+          simple2:"You can search. You can view apps. Apps show data as maps or charts."
+        },
+        search:{ placeholder:"Search datasets, apps, posts…", go:"Search", results:"Search results", groupGeneral:"Posts", groupDatasets:"Datasets", groupApps:"Applications", noResults:"No results found." },
+        blog:{ title:"News: Open data projects & initiatives", details:"Read more" },
+        datasets:{
+          title:"Datasets",
+          filters:"Search & Filters",
+          searchPlaceholder:"Search dataset…",
+          category:"Category",
+          all:"All",
+          reset:"Reset",
+          perPage:"Per page",
+          prev:"Previous",
+          next:"Next"
+        },
+        datasetCatMap:{ Verkehr:"Mobility", Umwelt:"Environment", Verwaltung:"Administration", Kultur:"Culture" },
+        cat:{ transport:"Mobility", environment:"Environment", admin:"Administration", culture:"Culture" },
+        datasetModal:{
+          title:"Dataset details",
+          category:"Category",
+          format:"Format",
+          updated:"Last updated",
+          publisher:"Publisher",
+          records:"Records",
+          fields:"Fields",
+          summary:"Summary",
+          open:"Open dataset"
+        },
+        apps:{ title:"Applications", filters:"Filters", reset:"Reset", searchLabel:"Search", searchPlaceholder:"Search applications…", perPage:"Per page", categories:"Categories", tags:"Tags", tagsExplain:"→ Explanation of Tags", cardDetails:"More information about the application", cardOpen:"Open application",
+        back: "Back to overview",
+openCta: "Go to application",
+reviews: "Ratings & Comments",
+averageRating: "Average",
+yourRating: "Your rating",
+name: "Name",
+comment: "Comment",
+submitReview: "Submit review",
+noComments: "No comments yet.",
+shareHeading: "Share this application now:",
+share: { facebook: "Facebook", x: "X", linkedin: "LinkedIn" },
+meta: {
+  status: "Status",
+  created: "Created",
+  updated: "Last updated",
+  author: "Author",
+  datasets: "Used datasets",
+  formats: "Data formats",
+  category: "Category",
+  tags: "Tags",
+  license: "License",
+  tech: "Technology stack"
+},
+activeOnly: {
+  label: "Show only active",
+  help: "Uncheck to include archived."
+},
+sort: {
+  label: "Sort by",
+  options: {
+    relevance: "Relevance",
+    newest: "Newest",
+    oldest: "Oldest",
+    az: "A–Z"
+  }
+},contactCTA: "Questions about the applications?",
+ statusMap: { active: "Active", inactive: "Inactive" }
+},
+        contact:{
+          title:"Contact", desc:"Tell us your request and we will get back to you soon.", requiredHint:"Required fields",
+          firstName:"First name", lastName:"Last name", email:"Email", phone:"Phone (optional)",
+          topic:"Topic", topics:{dataset:"Dataset", application:"Application", general:"General"}, choose:"Please choose…",
+          message:"Message", messageHelp:"Describe your request as specifically as possible.",
+          imageHelp:"Max 4 MB. PNG or JPG.",
+          uploadHelp: "Optional explanatory image (e.g. screenshot).",
+          send:"Send", reset:"Reset",
+          errFirstName:"Please enter your first name (min 2 characters).",
+          errLastName:"Please enter your last name (min 2 characters).",
+          errEmail:"Please enter a valid email address (with “@”).",
+          errPhone:"Please enter a valid phone number (min 6 characters).",
+          errTopic:"Please choose a topic.",
+          errMessage:"Please describe your request (≥ 20 characters)."
+        },
+        odi:{ title:"Open data: easy explanation", simple:"Easy language", p1:"Open data means: data are free. Everyone may read, use and share the data.", p2:"The city collects many data. For example: bus times, air values, office locations.", p3:"With open data you can build new things: maps, apps or texts. This helps everyone.", l1:"You do not need permission.", l2:"You name the source.", l3:"You protect personal data.", appDefTitle:"What is an application?", appDefText:"In this portal, an application is a digital service that uses open data to solve a task: for example maps, dashboards, or search tools. Applications combine data sources, add logic, and present them so residents, businesses, and developers can use the information right away.", tagsTitle:"Explanation of Tags in Applications", tagsIntro:"Tags help you filter applications by their characteristics and functions. Here is an explanation of all available tags:" },
+        imprint:{ title:"Imprint & Privacy", imprint:"Imprint", privacy:"Privacy", placeholder:"Provider details – placeholder for department, address, representation, contact.", privacyText:"Notes on personal data processing in this portal – placeholder." },
+        footer:{ contact:"Contact form", imprint:"Imprint / Privacy" },
+        common:{ open:"Open", details:"Details" },
+        tags:{ name:{ "Karte":"Map","Echtzeit":"Realtime","Diagramm":"Chart","CSV":"CSV","POI":"POI","Service":"Service","Formulare":"Forms","OpenRoute":"OpenRoute","Zeitreihe":"Time series","Kalender":"Calendar","Adressen":"Addresses","API":"API","Raster":"Raster" }, desc:{ "Karte":"Application displays data on a geographic map. Ideal for location-based information such as locations, routes, or regional distributions.","Echtzeit":"Data is updated in real-time or at very short intervals. Examples: live traffic information, current sensor readings.","Diagramm":"Data is presented in the form of diagrams, graphs, or visualizations. Helps quickly identify trends and patterns.","CSV":"Data is provided in CSV format. This format is widely supported and can be easily imported into spreadsheet applications like Excel.","POI":"Point of Interest – The application shows or uses points of interest, such as shops, landmarks, or public facilities.","Service":"The application provides a practical service or tool that often works in real-time and is directly useful.","Formulare":"With this application you can fill out and submit forms, for example for notifications or requests.","OpenRoute":"The application uses OpenStreetMap or similar open routing services for navigation and route planning functions.","Zeitreihe":"Data is presented as a time series, enabling the analysis of developments over a period of time.","Kalender":"The application displays appointments, events, or time sequences in calendar format.","Adressen":"The application contains or uses address data, such as government office addresses, business addresses, or locations.","API":"An API (Application Programming Interface) is available that allows developers to use data programmatically.","Raster":"Data is provided in raster format (images, satellite imagery). Commonly used for geographic or sensor data." } },
+        appCatMap:{ "Mobilität":"Mobility","Umwelt":"Environment","Kultur":"Culture","Verwaltung":"Administration" },
+        tagMap:{ "Karte":"Map","Echtzeit":"Realtime","Diagramm":"Chart","CSV":"CSV","POI":"POI","Service":"Service","Formulare":"Forms","OpenRoute":"OpenRoute","Zeitreihe":"Time series","Kalender":"Calendar","Adressen":"Addresses","API":"API","Raster":"Raster" },
+        tagDescriptions:{
+          "Karte":"Application displays data on a geographic map. Ideal for location-based information such as locations, routes, or regional distributions.",
+          "Echtzeit":"Data is updated in real-time or at very short intervals. Examples: live traffic information, current sensor readings.",
+          "Diagramm":"Data is presented in the form of diagrams, graphs, or visualizations. Helps quickly identify trends and patterns.",
+          "CSV":"Data is provided in CSV format. This format is widely supported and can be easily imported into spreadsheet applications like Excel.",
+          "POI":"Point of Interest – The application shows or uses points of interest, such as shops, landmarks, or public facilities.",
+          "Service":"The application provides a practical service or tool that often works in real-time and is directly useful.",
+          "Formulare":"With this application you can fill out and submit forms, for example for notifications or requests.",
+          "OpenRoute":"The application uses OpenStreetMap or similar open routing services for navigation and route planning functions.",
+          "Zeitreihe":"Data is presented as a time series, enabling the analysis of developments over a period of time.",
+          "Kalender":"The application displays appointments, events, or time sequences in calendar format.",
+          "Adressen":"The application contains or uses address data, such as government office addresses, business addresses, or locations.",
+          "API":"An API (Application Programming Interface) is available that allows developers to use data programmatically.",
+          "Raster":"Data is provided in raster format (images, satellite imagery). Commonly used for geographic or sensor data."
+        }
+      }
+    };
+
+    // Demo data with images
+    const BLOG_POSTS = [
+      {
+        id: 'post1',
+        date: '2025-10-10',
+        img: './Gemini_Generated_Image_Radfahrer.png',
+        title: { de: 'Neue Kartenansicht für Radwege', en: 'New bicycle lanes map' },
+        excerpt: { de: 'Interaktive Karte zeigt sichere Routen.', en: 'Interactive map highlights safe routes.' },
+        tags: ['Verkehr', 'Karte'],
+        link: 'https://example.org/blog/bike-map',
+        content: {
+          de: '<p>Wir haben eine überarbeitete, interaktive Kartenansicht veröffentlicht, die sichere Fahrradrouten in Dresden hervorhebt. Nutzer können Routen nach Steigung, Verkehr und Belag filtern sowie eigene Favoriten speichern.</p><ul><li>Interaktive Filter (Steigung, Oberfläche, Ampeln)</li><li>Export als GPX</li><li>Community-Feedback zur Qualität der Wege</li></ul>',
+          en: '<p>We published an updated interactive map highlighting safe bicycle routes across Dresden. Users can filter by slope, traffic and surface type, and save favorites.</p><ul><li>Interactive filters (slope, surface, signals)</li><li>Export as GPX</li><li>Community feedback on route quality</li></ul>'
+        }
+      },
+      {
+        id: 'post2',
+        date: '2025-09-18',
+        img: './Gemini_Generated_Image_Bus.png',
+        title: { de: 'Offene Verkehrsdaten: Neue API für Echtzeit-Buspositionsdaten', en: 'Open Transit: New API for real-time bus positions' },
+        excerpt: { de: 'DVB stellt Echtzeitdaten bereit.', en: 'DVB now offers realtime bus data.' },
+        tags: ['Verkehr', 'API', 'Echtzeit'],
+        link: 'https://example.org/blog/dvb-realtime',
+        content: {
+          de: '<p>Das Verkehrsunternehmen stellt nun eine offene API zur Verfügung, die Fahrzeugpositionen und Linienstatus in Echtzeit liefert. Entwickler können über einfache Endpunkte Positionsdaten, Verspätungsinformationen und Linienfahrpläne abrufen.</p><p>Beispielendpunkte: <code>/vehicles</code>, <code>/lines/:id/status</code>.</p>',
+          en: '<p>The transport operator now provides an open API delivering vehicle positions and line status in real time. Developers can fetch position data, delay information and schedules via simple endpoints.</p><p>Example endpoints: <code>/vehicles</code>, <code>/lines/:id/status</code>.</p>'
+        }
+      },
+      {
+        id: 'post3',
+        date: '2025-07-02',
+        img: './Gemini_Generated_Image_Workshop.png',
+        title: { de: 'Open-Data-Workshop: Citizen Science in Dresden', en: 'Open data workshop: citizen science in Dresden' },
+        excerpt: { de: 'Gemeinsam lernen und umsetzen.', en: 'Learn and build together.' },
+        tags: ['Community', 'Workshop'],
+        link: 'https://example.org/blog/workshop-citizen-science',
+        content: {
+          de: '<p>Beim Open-Data-Workshop trafen sich Bürgerinnen, Entwicklerinnen und Verwaltung, um gemeinsame Projekte zu planen. Inhalte waren Datensammlung, Qualitätsprüfung und einfache Visualisierungen mit offenen Werkzeugen.</p><p>Materialien und Beispielcode sind im Repository verfügbar.</p>',
+          en: '<p>At the open-data workshop citizens, developers and the administration met to plan joint projects. Topics included data collection, quality checks and simple visualisations using open tools.</p><p>Materials and example code are available in the project repository.</p>'
+        }
+      },
+      {
+        id: 'post4',
+        date: '2025-06-20',
+        img: './Gemini_Generated_Image_Haushalt.png',
+        title: { de: 'Transparente Verwaltung: Ausgaben als CSV', en: 'Transparent gov: spending CSV' },
+        excerpt: { de: 'Haushaltsdaten veröffentlicht.', en: 'Budget data published.' },
+        tags: ['Verwaltung', 'CSV'],
+        link: 'https://example.org/blog/budget-csv',
+        content: {
+          de: '<p>Die Stadt hat offengelegt, wie Mittel in den letzten Jahren verwendet wurden. Die CSV-Datei enthält Position, Empfänger, Betrag und Haushaltsjahr. Die Daten ermöglichen einfache Auswertungen und Diagramme zur Ausgabentransparenz.</p>',
+          en: '<p>The city published how funds were spent in recent years. The CSV contains item, recipient, amount and fiscal year. The data enable straightforward analyses and charts for spending transparency.</p>'
+        }
+      },
+      {
+        id: 'post5',
+        date: '2025-05-01',
+        img: './Gemini_Generated_Image_Museum.png',
+        title: { de: 'Kulturorte – offene POI-Daten', en: 'Cultural POIs – open data' },
+        excerpt: { de: 'Museen, Bühnen, Sammlungen.', en: 'Museums, venues, collections.' },
+        tags: ['Kultur', 'POI'],
+        link: 'https://example.org/blog/culture-poi',
+        content: {
+          de: '<p>Ein neuer Datensatz listet Kultureinrichtungen in Dresden mit Adressen, Öffnungszeiten und Kategorisierungen. Er eignet sich für Kartenanwendungen und Veranstaltungs-Links.</p>',
+          en: '<p>A new dataset lists cultural sites in Dresden with addresses, opening hours and categories. It is suitable for map apps and event linking.</p>'
+        }
+      },
+      {
+        id: 'post6',
+        date: '2025-04-15',
+        img: './Gemini_Generated_Image_Luft.png',
+        title: { de: 'Neue Umweltdaten: Luftqualitätsmessungen als CSV', en: 'New environmental data: air quality CSV' },
+        excerpt: { de: 'Tägliche Aktualisierung.', en: 'Updated daily.' },
+        tags: ['Umwelt', 'CSV'],
+        link: 'https://example.org/blog/air-quality-csv',
+        content: {
+          de: '<p>Die Luftqualitätsdaten umfassen PM2.5, PM10 und NO2-Messwerte für mehrere Stationen in Dresden. Die CSV-Dateien werden täglich aktualisiert und enthalten Timestamp, Station und gemessenen Wert.</p>',
+          en: '<p>The air quality data include PM2.5, PM10 and NO2 readings for multiple stations in Dresden. The CSVs are updated daily and include timestamp, station and measured value.</p>'
+        }
+      }
+    ];
+
+    const DATASETS = [
+      { id:'ds1', category:'Verkehr', name:{de:'Haltestellen der DVB', en:'DVB stops'}, meta:{format:'GeoJSON', updated:'2025-10-12', publisher:'Stadt Dresden', records:1842, fields:['id','name','lat','lon','lines'], summary:{de:'Alle Haltestellen der DVB mit Koordinaten und Linienzuordnung.', en:'All DVB stops with coordinates and served lines.'}}, link:'https://example.org/datasets/dvb-stops' },
+      { id:'ds2', category:'Umwelt', name:{de:'Luftqualitätsmessungen', en:'Air quality measurements'}, meta:{format:'CSV', updated:'2025-10-10', publisher:'Umweltamt Dresden', records:36500, fields:['station','ts','pm10','no2','o3'], summary:{de:'Zeitreihe der Messstationen mit PM10, NO2, O3 im Stundenraster.', en:'Time series from monitoring stations with PM10, NO2, O3 hourly data.'}}, link:'https://example.org/datasets/air-quality' },
+      { id:'ds3', category:'Verwaltung', name:{de:'Verwaltungsbezirke', en:'Administrative districts'}, meta:{format:'Shapefile', updated:'2025-06-01', publisher:'Stadt Dresden', records:63, fields:['id','name','population','geometry'], summary:{de:'Grenzen der Stadt- und Ortsbezirke mit Einwohnerzahl.', en:'Boundaries of city and local districts with population figures.'}}, link:'https://example.org/datasets/districts' },
+      { id:'ds4', category:'Kultur', name:{de:'Museen & Sammlungen', en:'Museums & collections'}, meta:{format:'JSON', updated:'2025-05-21', publisher:'Kulturbüro Dresden', records:42, fields:['id','name','address','type'], summary:{de:'Museen, Sammlungen und Standorte mit Kategorie und Adresse.', en:'Museums and collections with category and address.'}}, link:'https://example.org/datasets/museums' },
+      { id:'ds5', category:'Verkehr', name:{de:'Radwege-Netz', en:'Bicycle lanes'}, meta:{format:'GeoPackage', updated:'2025-10-01', publisher:'Stadt Dresden', records:1180, fields:['id','name','surface','geometry'], summary:{de:'Radwege- und Radroutenabschnitte mit Belag.', en:'Bike lanes and route segments with surface type.'}}, link:'https://example.org/datasets/bikelanes' },
+      { id:'ds6', category:'Umwelt', name:{de:'Stadtbäume', en:'City trees'}, meta:{format:'CSV', updated:'2025-09-11', publisher:'Grünflächenamt', records:220430, fields:['id','species','age','lat','lon'], summary:{de:'Straßen- und Parkbäume mit Art, Alter und Standort.', en:'Street and park trees with species, age, and location.'}}, link:'https://example.org/datasets/trees' },
+      { id:'ds7', category:'Verwaltung', name:{de:'Ausschreibungen', en:'Tenders'}, meta:{format:'JSON', updated:'2025-08-18', publisher:'Zentrale Vergabe', records:540, fields:['id','title','deadline','amount'], summary:{de:'Offene und vergangene Vergabeverfahren mit Terminen.', en:'Open and past procurement procedures with deadlines.'}}, link:'https://example.org/datasets/tenders' },
+      { id:'ds8', category:'Kultur', name:{de:'Veranstaltungskalender', en:'Events calendar'}, meta:{format:'ICS', updated:'2025-09-30', publisher:'Kulturbüro Dresden', records:860, fields:['id','title','start','end','venue'], summary:{de:'Kulturelle Termine als iCal mit Ort und Zeit.', en:'Cultural events as iCal with location and timing.'}}, link:'https://example.org/datasets/events' },
+      { id:'ds9', category:'Umwelt', name:{de:'Wetterstationen', en:'Weather stations'}, meta:{format:'CSV', updated:'2025-07-12', publisher:'Umweltamt', records:64, fields:['id','name','lat','lon','elevation'], summary:{de:'Stationen mit Lage, Höhe und Kürzeln.', en:'Stations with location, elevation, and codes.'}}, link:'https://example.org/datasets/weather-stations' },
+      { id:'ds10', category:'Verkehr', name:{de:'Parkplätze', en:'Parking lots'}, meta:{format:'CSV', updated:'2025-10-03', publisher:'Tiefbauamt', records:420, fields:['id','name','capacity','lat','lon'], summary:{de:'Parkplätze und Parkhäuser mit Kapazität.', en:'Parking lots and garages with capacity.'}}, link:'https://example.org/datasets/parking' },
+      { id:'ds11', category:'Verwaltung', name:{de:'Dienststellen-Verzeichnis', en:'Offices directory'}, meta:{format:'JSON', updated:'2025-08-01', publisher:'Stadt Dresden', records:210, fields:['id','name','address','contact'], summary:{de:'Dienststellen mit Adresse und Ansprechpartnern.', en:'Offices with address and contact persons.'}}, link:'https://example.org/datasets/offices' },
+      { id:'ds12', category:'Kultur', name:{de:'Bibliotheken', en:'Libraries'}, meta:{format:'CSV', updated:'2025-07-20', publisher:'Stadtbibliothek', records:38, fields:['id','name','opening_hours','lat','lon'], summary:{de:'Stadtteilbibliotheken mit Öffnungszeiten.', en:'Branch libraries with opening hours.'}}, link:'https://example.org/datasets/libraries' },
+      { id:'ds13', category:'Verwaltung', name:{de:'Servicekatalog (Leistungen & Formulare)', en:'Service catalogue (services & forms)'}, meta:{format:'JSON', updated:'2025-09-05', publisher:'Serviceportal Dresden', records:680, fields:['id','service','channel','form'], summary:{de:'Leistungen der Verwaltung inkl. Online-Formulare.', en:'Administrative services including online forms.'}}, link:'https://example.org/datasets/service-catalogue' },
+      { id:'ds14', category:'Umwelt', name:{de:'Elbe Pegelstände', en:'Elbe river gauge levels'}, meta:{format:'CSV', updated:'2025-09-22', publisher:'Hydrologie Dresden', records:125000, fields:['station','ts','level'], summary:{de:'Zeitreihe der Pegelstände an Elbestationen.', en:'Time series of gauge levels at Elbe stations.'}}, link:'https://example.org/datasets/elbe-gauges' },
+      { id:'ds15', category:'Verkehr', name:{de:'Parkzonen & Tarife', en:'Parking zones & tariffs'}, meta:{format:'GeoJSON', updated:'2025-10-03', publisher:'Tiefbauamt', records:140, fields:['id','zone','tariff','geometry'], summary:{de:'Bewirtschaftete Parkzonen mit Tarifstufen.', en:'Managed parking zones with tariff levels.'}}, link:'https://example.org/datasets/parking-zones' },
+      { id:'ds16', category:'Umwelt', name:{de:'Stadtklima Raster (LST)', en:'Urban climate raster (LST)'}, meta:{format:'GeoTIFF', updated:'2025-09-21', publisher:'Umweltamt Dresden', records:1, fields:['raster','resolution','crs'], summary:{de:'Rasterlayer mit Land Surface Temperature, 10m Auflösung.', en:'Raster layer with land surface temperature, 10 m resolution.'}}, link:'https://example.org/datasets/urban-climate-raster' }
+
+    ];
+
+    const APPS = [
+  {
+    id: 'app1',
+    category: 'Mobilität',
+    tags: ['Karte', 'Echtzeit'],
+    name: { de: 'Dresden Mobil Live', en: 'Dresden Mobility Live' },
+    desc: { de: 'Live-Map der öffentlichen Verkehrsmittel mit Störungen.', en: 'Live map of public transport with alerts.' },
+      img: './Gelber Bus auf der Stadtstraße.png',
+    long: {
+      de: '<p><strong>Dresden Mobil Live</strong> zeigt die Positionen von Straßenbahnen und Bussen in Echtzeit auf einer interaktiven Karte. Störungen, Sperrungen und Umleitungen werden visuell hervorgehoben.</p><ul><li>Echtzeit-Positionsdaten der DVB</li><li>Linien- und Haltestellenfilter</li><li>Dark-Mode & Performance-Optimierungen</li></ul>',
+      en: '<p><strong>Dresden Mobility Live</strong> displays realtime positions of trams and buses on an interactive map. Disruptions, closures and detours are highlighted.</p><ul><li>Realtime DVB vehicle positions</li><li>Line & stop filters</li><li>Dark mode & performance optimizations</li></ul>'
+    },
+    meta: {
+      created: '2025-04-10',
+      updated: '2025-10-12',
+      author: 'Open Data Team Dresden',
+      datasets: ['ds1', 'ds10'],
+      license: 'MIT',
+      tech: 'Leaflet, Vue, Vite'
+    },
+    link: 'https://example.org/apps/mobility-live',
+    status: 'active' ,
+    rating: 4.6,
+    content: { de: '<p>Zeigt Bus- und Straßenbahn-Positionen in Echtzeit.</p>', en: '<p>Displays realtime positions of buses and trams.</p>' }
+  },
+  {
+    id: 'app2',
+    category: 'Umwelt',
+    tags: ['Diagramm', 'CSV'],
+    name: { de: 'Luft & Leben', en: 'Air & Life' },
+    desc: { de: 'Visualisiert Luftqualitätsindikatoren nach Stadtteil.', en: 'Visualizes air quality by district.' },
+    img: './Stadtpanorama mit Wolken und Hochhäusern.png',
+    long: {
+      de: '<p><strong>Luft & Leben</strong> zeigt Feinstaub (PM2.5), NO₂ und Ozon nach Stadtteilen. Diagramme lassen sich nach Zeitraum und Station filtern.</p><ul><li>Tägliche Aktualisierung</li><li>CSV-Export der gefilterten Daten</li><li>Stationenvergleich</li></ul>',
+      en: '<p><strong>Air & Life</strong> displays PM2.5, NO₂ and ozone per district. Charts can be filtered by time range and station.</p><ul><li>Daily updates</li><li>CSV export of filtered data</li><li>Station comparison</li></ul>'
+    },
+    meta: {
+      created: '2025-03-02',
+      updated: '2025-10-10',
+      author: 'Umweltamt Dresden',
+      datasets: ['ds2', 'ds9'],
+      license: 'Apache-2.0',
+      tech: 'Svelte, D3.js'
+    },
+    link: 'https://example.org/apps/air-life',
+    status: 'active' ,
+    rating: 3.6,
+    content: { de: '<p>Filter nach Zeitraum und Station.</p>', en: '<p>Filter by time and station.</p>' }
+  },
+  {
+    id: 'app3',
+    category: 'Kultur',
+    tags: ['Karte', 'POI'],
+    name: { de: 'KulturRadar', en: 'CultureRadar' },
+    desc: { de: 'Interaktive Karte zu Museen, Bühnen und Events.', en: 'Interactive map of museums and events.' },
+    img: './Klassische Galerie mit Skulptur und Gemälden.png',
+    long: {
+      de: '<p><strong>KulturRadar</strong> bündelt Orte der Kultur – von Museen bis Bühnen – und verknüpft sie mit dem städtischen Veranstaltungskalender.</p><ul><li>Favoriten & Routenplanung</li><li>Barrierefrei-Filter</li><li>Kalenderintegration</li></ul>',
+      en: '<p><strong>CultureRadar</strong> unifies cultural POIs and links them to the city event calendar.</p><ul><li>Favorites & routing</li><li>Accessibility filter</li><li>Calendar integration</li></ul>'
+    },
+    meta: {
+      created: '2025-05-05',
+      updated: '2025-09-30',
+      author: 'Kulturbüro Dresden',
+      datasets: ['ds4', 'ds8'],
+      license: 'MIT',
+      tech: 'OpenLayers, React'
+    },
+    link: 'https://example.org/apps/cultureradar',
+    status: 'active' ,
+    rating: 5.0,
+    content: { de: '<p>Favoriten und Routing integriert.</p>', en: '<p>Favorites and routing included.</p>' }
+  },
+  {
+    id: 'app4',
+    category: 'Verwaltung',
+    tags: ['Service', 'Formulare'],
+    name: { de: 'Behörden-Navigator', en: 'Civic Navigator' },
+    desc: { de: 'Führt zu den richtigen Ämtern und Formularen.', en: 'Guides you to the right offices and forms.' },
+    img: './Gemini_Generated_Image_Formulare.png',
+    long: {
+      de: '<p><strong>Behörden-Navigator</strong> hilft bei der Suche nach zuständigen Stellen und Antragsformularen – nach Lebenslage und Standort.</p><ul><li>Automatische Zuständigkeitsprüfung</li><li>Formular-Download & Links</li><li>Öffnungszeiten & Termin-Hinweise</li></ul>',
+      en: '<p><strong>Civic Navigator</strong> helps you find the responsible office and forms – by life event and location.</p><ul><li>Automatic responsibility check</li><li>Form download & links</li><li>Opening hours & appointment hints</li></ul>'
+    },
+    meta: {
+      created: '2025-01-20',
+      updated: '2025-08-18',
+      author: 'Serviceportal Dresden',
+      datasets: ['ds11'],
+      license: 'EUPL-1.2',
+      tech: 'Next.js, Algolia'
+    },
+    link: 'https://example.org/apps/civic-navigator',
+    status: 'active' ,
+    rating: 2.6,
+    content: { de: '<p>Lebenslagen-basierte Suche.</p>', en: '<p>Life-event based search.</p>' }
+  },
+  {
+    id: 'app5',
+    category: 'Mobilität',
+    tags: ['Karte', 'OpenRoute'],
+    name: { de: 'Radwege-Planer', en: 'Bike Route Planner' },
+    desc: { de: 'Fahrradfreundliche Routenplanung.', en: 'Bike-friendly routing.' },
+    img: './Radfahrer auf ländlichem Pfad.png',
+    long: {
+      de: '<p><strong>Radwege-Planer</strong> berechnet sichere, fahrradfreundliche Routen – unter Berücksichtigung von Steigung, Verkehr und Infrastruktur.</p><ul><li>Routenprofile (schnell/angenehm/sicher)</li><li>Steigungsanalyse</li><li>Export als GPX</li></ul>',
+      en: '<p><strong>Bike Route Planner</strong> computes safe, bike-friendly routes considering slope, traffic and infrastructure.</p><ul><li>Route profiles (fast/pleasant/safe)</li><li>Slope analysis</li><li>Export as GPX</li></ul>'
+    },
+    meta: {
+      created: '2025-02-14',
+      updated: '2025-10-01',
+      author: 'Amt für Mobilität',
+      datasets: ['ds5', 'ds1'],
+      license: 'AGPL-3.0',
+      tech: 'Leaflet, OpenRouteService, SvelteKit'
+    },
+    link: 'https://example.org/apps/bike-planner',
+    status: 'active' ,
+    rating: 3.2,
+    content: { de: '<p>Berücksichtigt Steigung und Verkehr.</p>', en: '<p>Considers slope and traffic.</p>' }
+  },
+  {
+    id: 'app6',
+    category: 'Umwelt',
+    tags: ['Diagramm', 'Zeitreihe'],
+    name: { de: 'WasserWert', en: 'WaterValue' },
+    desc: { de: 'Pegeldaten der Elbe als Diagramm.', en: 'Elbe river gauge data as charts.' },
+    img: './Elbe im Abendlicht.png',
+    long: {
+      de: '<p><strong>WasserWert</strong> visualisiert Pegelstände und Trends der Elbe. Alarme können ab bestimmten Schwellenwerten aktiviert werden.</p><ul><li>Mehrere Messstationen</li><li>Garbage-in/out-Filterung</li><li>Benachrichtigungen per Browser</li></ul>',
+      en: '<p><strong>WaterValue</strong> visualizes Elbe river gauge levels and trends. Alerts can be triggered above thresholds.</p><ul><li>Multiple measuring stations</li><li>Outlier filtering</li><li>Browser notifications</li></ul>'
+    },
+    meta: {
+      created: '2025-03-28',
+      updated: '2025-09-22',
+      author: 'Hydrologie Dresden',
+      datasets: ['ds9'],
+      license: 'MIT',
+      tech: 'Chart.js, SolidStart'
+    },
+    link: 'https://example.org/apps/watervalue',
+    status: 'inactive' ,
+    rating: 4.6,
+    content: { de: '<p>Alarm bei Hochwasserstand.</p>', en: '<p>Flood alert.</p>' }
+  },
+  {
+    id: 'app7',
+    category: 'Kultur',
+    tags: ['Kalender'],
+    name: { de: 'EventScout', en: 'EventScout' },
+    desc: { de: 'Veranstaltungen im Überblick.', en: 'Overview of events.' },
+    img: './Musikfestival bei Dämmerung.png',
+    long: {
+      de: '<p><strong>EventScout</strong> bietet eine intelligente Eventsuche mit Kalenderansicht und Favoriten. Export als iCal oder Direktlink möglich.</p><ul><li>Datums- & Kategorienfilter</li><li>Standortnahe Vorschläge</li><li>iCal-Export</li></ul>',
+      en: '<p><strong>EventScout</strong> features smart event search with a calendar view and favorites. Export as iCal or direct link.</p><ul><li>Date & category filters</li><li>Nearby suggestions</li><li>iCal export</li></ul>'
+    },
+    meta: {
+      created: '2025-04-02',
+      updated: '2025-09-30',
+      author: 'Kulturbüro Dresden',
+      datasets: ['ds8'],
+      license: 'Apache-2.0',
+      tech: 'React, FullCalendar'
+    },
+    link: 'https://example.org/apps/eventscout',
+    status: 'active' ,
+    rating: 4.6,
+    content: { de: '<p>Export als iCal möglich.</p>', en: '<p>iCal export.</p>' }
+  },
+  {
+    id: 'app8',
+    category: 'Verwaltung',
+    tags: ['Karte', 'Adressen'],
+    name: { de: 'AmtFinder', en: 'Office Finder' },
+    desc: { de: 'Ämterkarte mit Öffnungszeiten.', en: 'Map of offices with opening hours.' },
+    img: './Gemini_Generated_Image_AmtFinder.png',
+    long: {
+      de: '<p><strong>AmtFinder</strong> zeigt Standorte, Zuständigkeiten und Öffnungszeiten der städtischen Ämter. Barrierefreie Zugänge sind markiert.</p><ul><li>Filter nach Zuständigkeit</li><li>Kontakt- & Termininfos</li><li>Routing zum Standort</li></ul>',
+      en: '<p><strong>Office Finder</strong> shows locations, responsibilities and opening hours of city offices. Accessible entrances are marked.</p><ul><li>Filter by responsibility</li><li>Contact & appointment info</li><li>Routing to location</li></ul>'
+    },
+    meta: {
+      created: '2025-02-01',
+      updated: '2025-08-25',
+      author: 'Digitales Rathaus',
+      datasets: ['ds11'],
+      license: 'EUPL-1.2',
+      tech: 'MapLibre GL, Astro'
+    },
+    link: 'https://example.org/apps/office-finder',
+    status: 'active' ,
+    rating: 3.9,
+    content: { de: '<p>Barrierefreie Eingänge gekennzeichnet.</p>', en: '<p>Accessible entrances marked.</p>' }
+  },
+  {
+    id: 'app9',
+    category: 'Mobilität',
+    tags: ['Echtzeit', 'API'],
+    name: { de: 'ParkLive', en: 'ParkLive' },
+    desc: { de: 'Freie Parkplätze in Echtzeit.', en: 'Live parking availability.' },
+    img: './Baumgesäumte Straße im urbanen Gebiet.png',
+    long: {
+      de: '<p><strong>ParkLive</strong> zeigt die Auslastung städtischer Parkflächen in Echtzeit. Prognosen helfen bei der Planung.</p><ul><li>Echtzeit-Sensordaten</li><li>Auslastungsprognose</li><li>Preis-/Zeitfilter</li></ul>',
+      en: '<p><strong>ParkLive</strong> displays real-time occupancy of city parking areas. Forecasts help planning ahead.</p><ul><li>Realtime sensor data</li><li>Occupancy forecast</li><li>Price/time filters</li></ul>'
+    },
+    meta: {
+      created: '2025-06-10',
+      updated: '2025-10-03',
+      author: 'Tiefbauamt Dresden',
+      datasets: ['ds10'],
+      license: 'AGPL-3.0',
+      tech: 'Web Components, RxJS'
+    },
+    link: 'https://example.org/apps/parklive',
+    status: 'active' ,
+    rating: 2.3,
+    content: { de: '<p>Sensorbasierte Auslastung.</p>', en: '<p>Sensor-based occupancy.</p>' }
+  },
+  {
+    id: 'app10',
+    category: 'Umwelt',
+    tags: ['Karte', 'Raster'],
+    name: { de: 'Stadtklima', en: 'Urban Climate' },
+    desc: { de: 'Hitzekarten nach Quartier.', en: 'Heat maps by neighborhood.' },
+    img: './Gemini_Generated_Image_Heatmap.png',
+    long: {
+      de: '<p><strong>Stadtklima</strong> macht sommerliche Hitzeinseln sichtbar. Rasterbasierte Karten zeigen Tages- und Nachtwerte.</p><ul><li>Quartiersvergleich</li><li>Historische Zeitreihen</li><li>Export von Kartenausschnitten</li></ul>',
+      en: '<p><strong>Urban Climate</strong> visualizes urban heat islands. Raster-based maps show day and night values.</p><ul><li>Neighborhood comparison</li><li>Historic time series</li><li>Export of map excerpts</li></ul>'
+    },
+    meta: {
+      created: '2025-05-15',
+      updated: '2025-09-21',
+      author: 'Umweltamt Dresden',
+      datasets: ['ds9'],
+      license: 'Apache-2.0',
+      tech: 'Kepler.gl, Vite, TypeScript'
+    },
+    link: 'https://example.org/apps/urban-climate',
+    status: 'inactive' ,
+    rating: 2.1,
+    content: { de: '<p>Sommerliche Hitzeinseln sichtbar.</p>', en: '<p>Shows urban heat islands.</p>' }
+  }
+];
+APPS.forEach(app => {
+  app.meta = app.meta || {};
+  if (app.status != null && app.meta.status == null) {
+    app.meta.status = app.status; // übernimmt String ('active'/'inactive') ODER {de,en}
+  }
+});
+
+    // Utils
+    function formatDateISO(dateStr, lang='de'){ const d = new Date(dateStr); return d.toLocaleDateString(lang, { year:'numeric', month:'short', day:'2-digit' }); }
+    const State = {
+  lang: 'de',
+  route: 'allgemeines',
+  searchQuery: '',
+  datasetPage: 1,
+  datasetPageSize: Number(localStorage.getItem('dataset_page_size')) || 10,
+  appsPage: 1,
+  appsPageSize: Number(localStorage.getItem('apps_page_size')) || 10,
+  appsSort: localStorage.getItem('apps_sort') || 'relevance'
+};
+    const getLang = () => State.lang || 'de';
+
+    function tDatasetCat(cat){ const map = I18N[State.lang].datasetCatMap || {}; return map[cat] || cat; }
+    function tCat(cat){ const map = I18N[State.lang].appCatMap || {}; return map[cat] || cat; }
+    function tTag(tag){ const map = I18N[State.lang].tagMap || {}; return map[tag] || tag; }
+
+    // Classic i18n for data-i18n
+    function applyI18n(){
+      State.lang = getLang();
+      const t = I18N[State.lang];
+      document.documentElement.lang = State.lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const val = key.split('.').reduce((acc,p)=>acc && acc[p], t);
+        if(typeof val === 'string') el.textContent = val;
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        const val = key.split('.').reduce((acc,p)=>acc && acc[p], t);
+        if(typeof val === 'string') el.setAttribute('placeholder', val);
+      });
+      renderAppFacets(true);
+      renderBlogFeed(); renderDatasets(); renderApps();
+    }
+
+    // Per-element translator for data-t-de/en (upload buttons + messages)
+    function translateDom(){
+      const lang = getLang();
+      document.querySelectorAll('[data-t-de][data-t-en]').forEach(el => {
+        if(el.id === 'fileName' && el.dataset.empty !== '1') return;
+        const text = lang === 'en' ? el.dataset.tEn : el.dataset.tDe;
+        // Use innerHTML for buttons (to render icons), textContent for other elements
+        if(el.tagName === 'BUTTON') {
+          el.innerHTML = text;
+        } else {
+          el.textContent = text;
+        }
+      });
+    }
+
+    // Helpers for routing / deep links
+    function openBlogModalById(postId){
+      const modalEl = document.getElementById('blogModal');
+      if(!modalEl || typeof bootstrap === 'undefined' || !bootstrap.Modal) return false;
+      const lang = getLang(); State.lang = lang;
+      const post = BLOG_POSTS.find(p => p.id === postId);
+      if(!post) return false;
+      modalEl.querySelector('.modal-title').textContent = post.title[lang];
+      modalEl.querySelector('.modal-body .blog-date').textContent = formatDateISO(post.date, lang);
+      const img = modalEl.querySelector('.modal-body .blog-img');
+      if(img){ img.src = post.img; img.alt = post.title[lang]; }
+      modalEl.querySelector('.modal-body .blog-content').innerHTML = post.content[lang] || post.excerpt[lang];
+      const tagWrap = modalEl.querySelector('.modal-body .blog-tags');
+      tagWrap.innerHTML = '';
+      post.tags.forEach(tag => { const span = document.createElement('span'); span.className = 'badge text-bg-light border me-1'; span.textContent = tTag(tag); tagWrap.appendChild(span); });
+      const bs = bootstrap.Modal.getOrCreateInstance(modalEl);
+      bs.show();
+      return true;
+    }
+
+    function openDatasetModalById(id){
+      const ds = DATASETS.find(d => String(d.id) === String(id));
+      if(!ds) return false;
+      return openDatasetModal(ds);
+    }
+
+    function openDatasetModal(ds){
+      const modalEl = document.getElementById('datasetModal');
+      if(!modalEl || typeof bootstrap === 'undefined' || !bootstrap.Modal) return false;
+      const lang = getLang(); State.lang = lang;
+      const t = I18N[lang].datasetModal;
+      modalEl.querySelector('.modal-title').textContent = ds.name[lang];
+      const meta = modalEl.querySelector('.dataset-meta-list');
+      meta.innerHTML = '';
+      const addRow = (label, value) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${label}:</strong> ${value}`;
+        meta.appendChild(li);
+      };
+      addRow(t.category, tDatasetCat(ds.category));
+      addRow(t.format, ds.meta.format);
+      addRow(t.updated, new Date(ds.meta.updated).toLocaleDateString(lang));
+      addRow(t.publisher, ds.meta.publisher);
+      if(ds.meta.records != null) addRow(t.records, ds.meta.records.toLocaleString(lang));
+      if(ds.meta.fields?.length) addRow(t.fields, ds.meta.fields.join(', '));
+      const summary = ds.meta.summary?.[lang] || '';
+      modalEl.querySelector('.dataset-summary').textContent = summary;
+      const link = modalEl.querySelector('.dataset-open');
+      if(link){ link.href = ds.link || '#'; }
+      const bs = bootstrap.Modal.getOrCreateInstance(modalEl);
+      bs.show();
+      return true;
+    }
+
+    function resetDatasetFiltersForDeepLink(){
+      const cat = document.getElementById('datasetCategory');
+      if(cat) cat.value = '';
+      State.datasetPage = 1;
+    }
+
+    function resetAppFiltersForDeepLink(){
+      document.querySelectorAll('.app-cat').forEach(ch => ch.checked = false);
+      document.querySelectorAll('.app-tag').forEach(b => b.classList.remove('active'));
+      const activeOnly = document.getElementById('appsActiveOnly');
+      if(activeOnly){ activeOnly.checked = false; localStorage.setItem('apps_active_only','0'); }
+      State.appsPage = 1;
+    }
+
+    function focusDatasetById(id){
+      const lang = getLang(); State.lang = lang;
+      resetDatasetFiltersForDeepLink();
+      const ds = DATASETS.find(d => String(d.id) === String(id));
+      const input = document.getElementById('datasetSearch');
+      if(input) input.value = (ds?.name?.[lang]) || '';
+      return !!ds;
+    }
+
+    function focusAppById(id){
+      const lang = getLang(); State.lang = lang;
+      resetAppFiltersForDeepLink();
+      const app = APPS.find(a => String(a.id) === String(id));
+      const input = document.getElementById('appsSearch');
+      if(input) input.value = (app?.name?.[lang]) || '';
+      return !!app;
+    }
+
+    function scrollToSection(sectionId){
+      document.getElementById(sectionId)?.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+
+    // Routing
+    function setRouteFromHash(){
+      const raw = window.location.hash.replace('#','');
+      let route = raw;
+      const primary = ['allgemeines','datenbestaende','anwendungen','open-data-info','kontakt','impressum'];
+      if(raw.startsWith('post/')){
+        const postId = raw.split('/')[1];
+        const opened = openBlogModalById(postId);
+        if(!opened){
+          window.addEventListener('load', () => openBlogModalById(postId), { once:true });
+        }
+        route = 'allgemeines';
+      } else if(raw.startsWith('app/')){
+        focusAppById(raw.split('/')[1]);
+        route = 'anwendungen';
+      } else if(raw.startsWith('dataset/')){
+        const dsId = raw.split('/')[1];
+        const found = focusDatasetById(dsId);
+        setTimeout(()=> openDatasetModalById(dsId), found ? 30 : 150);
+        route = 'datenbestaende';
+      }
+      if(!primary.includes(route)) route = 'allgemeines';
+      State.route = route;
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      document.getElementById(`section-${route}`).classList.add('active');
+      document.querySelectorAll('.nav-link').forEach(a => a.classList.toggle('active', a.getAttribute('href') === `#${route}`));
+      applyI18n(); // Stelle sicher, dass i18n auf der neuen Seite angewendet wird
+      if(route === 'datenbestaende') scrollToSection('section-datenbestaende');
+      if(route === 'anwendungen') scrollToSection('section-anwendungen');
+    }
+
+    // Blog
+    function renderBlogFeed(){
+      const wrap = document.getElementById('blogFeed'); wrap.innerHTML = '';
+      const tpl = document.getElementById('tpl-blog-card');
+      BLOG_POSTS.slice().sort((a,b)=> new Date(b.date)-new Date(a.date)).forEach(post => {
+        const node = tpl.content.cloneNode(true);
+        const img = node.querySelector('img.blog-img');
+        img.src = post.img;
+        img.alt = post.title[State.lang];
+        const openPost = (e) => {
+          if(e) e.preventDefault();
+          if(!openBlogModalById(post.id)){
+            window.location.hash = `#post/${post.id}`;
+          }
+        };
+        img.addEventListener('click', openPost);
+        node.querySelector('.blog-date').textContent = formatDateISO(post.date, State.lang);
+        node.querySelector('.blog-title').textContent = post.title[State.lang];
+        node.querySelector('.blog-excerpt').textContent = post.excerpt[State.lang];
+        const tags = node.querySelector('.blog-tags');
+        post.tags.forEach(tag => { const span = document.createElement('span'); span.className = 'badge text-bg-light border'; span.textContent = tTag(tag); tags.appendChild(span); });
+        const btnDetail = node.querySelector('.blog-detail');
+        btnDetail.textContent = I18N[State.lang].blog.details;
+        // Prevent default navigation; open modal with full post instead
+        btnDetail.href = '#';
+        btnDetail.addEventListener('click', (e) => {
+          e.preventDefault();
+          openPost();
+        });
+        wrap.appendChild(node);
+      });
+    }
+
+    // Datasets
+    function renderDatasets(){
+  const q   = (document.getElementById('datasetSearch').value || '').toLowerCase();
+  const cat = document.getElementById('datasetCategory').value;
+
+  // filtern
+  const filtered = DATASETS.filter(ds => {
+    const inCat = !cat || ds.category === cat;
+    const inSearch = !q
+      || ds.name.de.toLowerCase().includes(q)
+      || ds.name.en.toLowerCase().includes(q)
+      || (ds.meta.format||'').toLowerCase().includes(q);
+    return inCat && inSearch;
+  });
+
+  // Count anzeigen (Gesamt nach Filter)
+  document.getElementById('datasetCount').textContent = String(filtered.length);
+
+  // Pagination berechnen
+  const size = State.datasetPageSize || 10;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / size));
+  if(State.datasetPage > totalPages) State.datasetPage = totalPages;
+  if(State.datasetPage < 1) State.datasetPage = 1;
+
+  const start = (State.datasetPage - 1) * size;
+  const paged = filtered.slice(start, start + size);
+
+  // Liste rendern
+  const list = document.getElementById('datasetRegister');
+  list.innerHTML = '';
+  const tpl = document.getElementById('tpl-dataset-row');
+
+  if(paged.length === 0){
+    const p = document.createElement('p');
+    p.className = 'text-secondary m-0';
+    p.textContent = I18N[State.lang].search.noResults;
+    list.appendChild(p);
+  } else {
+    paged.forEach(ds => {
+      const node = tpl.content.cloneNode(true);
+      node.querySelector('.dataset-title').textContent = ds.name[State.lang];
+      const catLabel = tDatasetCat(ds.category);
+      node.querySelector('.dataset-meta').textContent =
+        `${catLabel} · ${ds.meta.format} · ${new Date(ds.meta.updated).toLocaleDateString(State.lang)} · ${ds.meta.publisher}`;
+      node.querySelector('.dataset-link').href = ds.link;
+      const btnOpenDs = node.querySelector('[data-i18n="common.open"]');
+      const btnDetailDs = node.querySelector('[data-i18n="common.details"]');
+      if(btnOpenDs){
+        btnOpenDs.textContent = State.lang === 'en' ? 'Open dataset' : 'Datensatz öffnen';
+      }
+      if(btnDetailDs){
+        btnDetailDs.textContent = State.lang === 'en' ? 'Show metadata' : 'Metadaten öffnen';
+      }
+      const detailBtn = node.querySelector('.dataset-detail');
+      detailBtn.href = '#';
+      detailBtn.addEventListener('click', (e)=>{ e.preventDefault(); openDatasetModalById(ds.id); });
+      list.appendChild(node);
+    });
+  }
+
+  // Pagination-UI aktualisieren
+  updateDatasetPagination(totalPages);
+}
+function updateDatasetPagination(totalPages){
+  const ul = document.getElementById('datasetPagination');
+  ul.innerHTML = '';
+  const makeItem = (label, page, disabled=false, active=false, ariaLabel=null) => {
+    const li = document.createElement('li');
+    li.className = `page-item${disabled ? ' disabled' : ''}${active ? ' active' : ''}`;
+    const a = document.createElement('a');
+    a.className = 'page-link';
+    a.href = '#';
+    a.textContent = label;
+    if(ariaLabel) a.setAttribute('aria-label', ariaLabel);
+    a.addEventListener('click', (e)=>{ e.preventDefault(); if(disabled || active) return; State.datasetPage = page; renderDatasets(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    li.appendChild(a);
+    return li;
+  };
+
+  const current = State.datasetPage;
+
+  // Prev
+  ul.appendChild(makeItem('«', current - 1, current <= 1, false, I18N[State.lang].datasets?.prev || 'Zurück'));
+
+  // Seitenfenster (kompakt)
+  const windowSize = 5;
+  let start = Math.max(1, current - Math.floor(windowSize/2));
+  let end   = Math.min(totalPages, start + windowSize - 1);
+  if(end - start + 1 < windowSize){ start = Math.max(1, end - windowSize + 1); }
+
+  if(start > 1){
+    ul.appendChild(makeItem('1', 1, false, current === 1));
+    if(start > 2){
+      const li = document.createElement('li'); li.className = 'page-item disabled';
+      li.innerHTML = `<span class="page-link">…</span>`; ul.appendChild(li);
+    }
+  }
+
+  for(let p = start; p <= end; p++){
+    ul.appendChild(makeItem(String(p), p, false, p === current));
+  }
+
+  if(end < totalPages){
+    if(end < totalPages - 1){
+      const li = document.createElement('li'); li.className = 'page-item disabled';
+      li.innerHTML = `<span class="page-link">…</span>`; ul.appendChild(li);
+    }
+    ul.appendChild(makeItem(String(totalPages), totalPages, false, current === totalPages));
+  }
+
+  // Next
+  ul.appendChild(makeItem('»', current + 1, current >= totalPages, false, I18N[State.lang].datasets?.next || 'Weiter'));
+}
+
+
+
+    // Apps
+    function buildFacet(values){ return Array.from(new Set(values)).sort(); }
+
+function renderAppFacets(preserve=false){
+  // aktuelle Auswahl merken (wenn preserve)
+  const selectedCats = new Set(Array.from(document.querySelectorAll('.app-cat:checked')).map(ch => ch.value));
+  const selectedTags = new Set(Array.from(document.querySelectorAll('.app-tag.active')).map(b => b.dataset.tag));
+
+  // Kategorien
+  const catWrap = document.getElementById('appsCategories'); catWrap.innerHTML = '';
+  buildFacet(APPS.map(a => a.category)).forEach(cat => {
+    const id = `cat-${cat}`;
+    const div = document.createElement('div');
+    const label = (I18N[State.lang].appCatMap && I18N[State.lang].appCatMap[cat]) || cat; // tCat
+    div.innerHTML = `
+      <div class="form-check">
+        <input class="form-check-input app-cat" type="checkbox" value="${cat}" id="${id}">
+        <label class="form-check-label" for="${id}">${label}</label>
+      </div>`;
+    catWrap.appendChild(div);
+  });
+
+  // Tags
+  const tagWrap = document.getElementById('appsTags'); tagWrap.innerHTML = '';
+  buildFacet(APPS.flatMap(a => a.tags)).forEach(tag => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn btn-sm btn-outline-dark app-tag';
+    const pretty = (I18N[State.lang].tagMap && I18N[State.lang].tagMap[tag]) || tag; // tTag
+    btn.textContent = pretty;
+    btn.dataset.tag = tag; // Raw-Tag zum Filtern
+    tagWrap.appendChild(btn);
+  });
+
+  // Auswahl wiederherstellen
+  if(preserve){
+    document.querySelectorAll('.app-cat').forEach(ch => { ch.checked = selectedCats.has(ch.value); });
+    document.querySelectorAll('.app-tag').forEach(b => { if(selectedTags.has(b.dataset.tag)) b.classList.add('active'); });
+  }
+}
+
+
+function getRating(app){
+  // Lies die Zahl ausschließlich aus den App-Daten
+  const v =
+    (app && app.meta && app.meta.rating != null) ? app.meta.rating :
+    (app && app.rating != null)                  ? app.rating :
+    (app && app.meta && app.meta.stars != null)  ? app.meta.stars :
+    (app && app.stars != null)                   ? app.stars : 0;
+
+  const n = Number(String(v).toString().replace(',', '.'));
+  return isNaN(n) ? 0 : Math.max(0, Math.min(5, n));
+}
+
+function getCreatedTime(app){
+  const s = (app?.meta?.created || app?.meta?.updated || '').trim();
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  if(!m) return 0;
+  const y = Number(m[1]), mo = Number(m[2]) - 1, d = Number(m[3]);
+  return new Date(y, mo, d).getTime();
+}
+
+  function renderApps(){
+  const q = (document.getElementById('appsSearch').value || '').toLowerCase();
+  const activeCats = Array.from(document.querySelectorAll('.app-cat:checked')).map(ch=>ch.value);
+  const activeTags = Array.from(document.querySelectorAll('.app-tag.active')).map(b=>b.dataset.tag);
+  const activeOnly = document.getElementById('appsActiveOnly')
+    ? document.getElementById('appsActiveOnly').checked
+    : true;
+  let inactiveHidden = 0;
+
+  let filtered = APPS.filter(app => {
+    const qMatch = !q
+      || app.name.de.toLowerCase().includes(q) || app.name.en.toLowerCase().includes(q)
+      || app.desc.de.toLowerCase().includes(q) || app.desc.en.toLowerCase().includes(q);
+    const catMatch = activeCats.length === 0 || activeCats.includes(app.category);
+    const tagMatch = activeTags.length === 0 || activeTags.every(t => app.tags.includes(t));
+
+    const stKey = statusKeyFromMeta(app.meta);
+    const statusMatch = !activeOnly || stKey === 'active';
+    if(activeOnly && !statusMatch && qMatch && catMatch && tagMatch){
+      inactiveHidden++;
+    }
+
+    return qMatch && catMatch && tagMatch && statusMatch;
+  });
+
+   // Comparatoren
+function cmpAZ(a, b){
+  const A = (a.name?.[State.lang] || '').toLowerCase();
+  const B = (b.name?.[State.lang] || '').toLowerCase();
+  if (A < B) return -1;
+  if (A > B) return 1;
+  return 0;
+}
+function cmpNewest(a, b){
+  return getCreatedTime(b) - getCreatedTime(a); // neueste zuerst
+}
+function cmpOldest(a, b){
+  return getCreatedTime(a) - getCreatedTime(b); // älteste zuerst
+}
+function cmpRelevance(a, b){
+  // Sterne absteigend; bei Gleichstand: neueste zuerst; danach A–Z
+  const r = getRating(b) - getRating(a);
+  if (r !== 0) return r;
+  const t = getCreatedTime(b) - getCreatedTime(a);
+  if (t !== 0) return t;
+  return cmpAZ(a, b);
+}
+
+// Sort anwenden
+switch (State.appsSort) {
+  case 'az': filtered.sort(cmpAZ); break;
+  case 'newest': filtered.sort(cmpNewest); break;
+  case 'oldest': filtered.sort(cmpOldest); break;
+  case 'relevance':
+  default: filtered.sort(cmpRelevance); break;
+}  
+
+
+  const totalFiltered = filtered.length;
+  const sizeA = State.appsPageSize || 10;
+  const totalPagesA = Math.max(1, Math.ceil(totalFiltered / sizeA));
+  if (State.appsPage > totalPagesA) State.appsPage = totalPagesA;
+  if (State.appsPage < 1) State.appsPage = 1;
+  const startA = (State.appsPage - 1) * sizeA;
+  const pagedA = filtered.slice(startA, startA + sizeA);
+  filtered = pagedA; 
+
+  const list = document.getElementById('appsList'); list.innerHTML = '';
+  const tpl = document.getElementById('tpl-app-card');
+
+  filtered.forEach(app => {
+    const node = tpl.content.cloneNode(true);
+
+ 
+
+    // Bild (Thumb)
+    const img = node.querySelector('.app-thumb');
+    if(app.img){ img.src = app.img; img.alt = app.name[State.lang]; }
+    // Mitte des Bildes anzeigen für ausgewählte Apps
+    if(app.id === 'app1' || app.id === 'app3' || app.id === 'app6' || app.id === 'app7' || app.id === 'app9') {
+      img.style.objectPosition = 'center';
+    }
+
+    const rNode = node.querySelector('.app-rating');
+if (rNode) {
+  const r = getRating(app); // -> Zahl oder null
+  if (r == null) {
+    // kein Rating hinterlegt: Placeholder oder ausblenden
+    rNode.querySelector('.app-rating-value').textContent = '—';
+    // optional komplett ausblenden:
+    // rNode.classList.add('invisible');
+  } else {
+    const text = (State.lang === 'de') ? String(r).replace('.', ',') : String(r);
+    rNode.querySelector('.app-rating-value').textContent = text;
+    rNode.setAttribute(
+      'aria-label',
+      State.lang === 'en' ? `Rating: ${r} of 5` : `Bewertung: ${r} von 5`
+    );
+    rNode.classList.remove('invisible');
+  }
+}
+
+    // Kategorie / Tags (übersetzt)
+    const tCat = (I18N[State.lang].appCatMap && I18N[State.lang].appCatMap[app.category]) || app.category;
+    const tTag = t => (I18N[State.lang].tagMap && I18N[State.lang].tagMap[t]) || t;
+    node.querySelector('.app-category').textContent = tCat;
+    node.querySelector('.app-tags').textContent    = app.tags.map(tTag).join(' · ');
+
+    // Status-Badge auf Karte
+    const statusKey = statusKeyFromMeta(app.meta);
+    const statusLabel = (I18N[State.lang]?.apps?.statusMap?.[statusKey]) || statusKey;
+    const statusEl = node.querySelector('.app-status-badge');
+    if(statusEl){
+      statusEl.textContent = statusLabel;
+      statusEl.classList.remove('text-bg-success','text-bg-danger');
+      statusEl.classList.add(statusKey === 'inactive' ? 'text-bg-danger' : 'text-bg-success');
+    }
+
+    // Titel/Desc
+    node.querySelector('.app-title').textContent = app.name[State.lang];
+    node.querySelector('.app-desc').textContent  = app.desc[State.lang];
+    const btnDetailLabel = node.querySelector('[data-i18n="apps.cardDetails"]');
+    const btnOpenLabel = node.querySelector('[data-i18n="apps.cardOpen"]');
+    if(btnDetailLabel){
+      btnDetailLabel.textContent = State.lang === 'en'
+        ? I18N.en.apps.cardDetails
+        : I18N.de.apps.cardDetails;
+    }
+    if(btnOpenLabel){
+      btnOpenLabel.textContent = State.lang === 'en'
+        ? I18N.en.apps.cardOpen
+        : I18N.de.apps.cardOpen;
+    }
+
+    // Links
+    node.querySelector('.app-link').href = app.link;
+    const btnDetail = node.querySelector('.app-detail');
+    btnDetail.dataset.appId = app.id;
+    btnDetail.addEventListener('click', (e) => { e.preventDefault(); AppsDetail.open(app.id); });
+
+    list.appendChild(node);
+  });
+
+  document.getElementById('appsCount').textContent = `${totalFiltered}`;
+  const inactiveInfo = document.getElementById('appsInactiveInfo');
+  if(inactiveInfo){
+    if(activeOnly && inactiveHidden > 0){
+      const txt = State.lang === 'en'
+        ? `${inactiveHidden} inactive apps hidden.`
+        : `${inactiveHidden} inaktive Anwendungen ausgeblendet.`;
+      inactiveInfo.textContent = txt;
+      inactiveInfo.classList.remove('d-none');
+    } else {
+      inactiveInfo.textContent = '';
+      inactiveInfo.classList.add('d-none');
+    }
+  }
+  updateAppsPagination(totalPagesA);
+  AppsDetail.refreshIfOpen();
+}
+
+const AppsDetail = (() => {
+  let currentId = null;
+  let currentStars = 0;
+  const ratingCache = new Set(); // avoids reference errors when clearing cached ratings
+
+  const els = {
+    listView:   document.getElementById('appsListView'),
+    detailView: document.getElementById('appsDetailView'),
+    back:       document.getElementById('appsBackBtn'),
+    filters:    document.getElementById('appsFiltersCol'),
+    content:    document.getElementById('appsContentCol'),
+    section:    document.getElementById('section-anwendungen'),
+    hero:       document.getElementById('appDetailImage'),
+    cat:        document.getElementById('appDetailCategory'),
+    tags:       document.getElementById('appDetailTags'),
+    title:      document.getElementById('appDetailTitle'),
+    desc:       document.getElementById('appDetailDesc'),
+    body:       document.getElementById('appDetailBody'),
+    meta:       document.getElementById('appDetailMeta'),
+    open:       document.getElementById('appDetailOpen'),
+    avg:        document.getElementById('appAvg'),
+    count:      document.getElementById('appCount'),
+    stars:      document.getElementById('ratingStars'),
+    reviewForm: document.getElementById('reviewForm'),
+    name:       document.getElementById('reviewName'),
+    comment:    document.getElementById('reviewComment'),
+    submit:     document.getElementById('submitReview'),
+    list:       document.getElementById('reviewsList'),
+    noComments: document.getElementById('noComments')
+  };
+
+  function escapeHTML(s){ return String(s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+
+  function setDetailLayout(isDetail){
+    if(els.section){ els.section.classList.toggle('apps-detail-mode', isDetail); }
+  }
+
+  function enhanceBackButton(){
+    if(!els.back) return;
+    Array.from(els.back.childNodes).forEach(node => {
+      if(node.nodeType === 3 && node.textContent.trim()){
+        els.back.removeChild(node);
+      }
+    });
+    if(!els.back.querySelector('i.bi-arrow-left-short')){
+      const icon = document.createElement('i');
+      icon.className = 'bi bi-arrow-left-short fs-5';
+      els.back.insertBefore(icon, els.back.firstChild);
+    }
+  }
+  enhanceBackButton();
+  setDetailLayout(false);
+
+  // --- Reviews in localStorage ---
+  const keyFor = (id) => `app_reviews_${id}`;
+  function loadReviews(id){ try{ return JSON.parse(localStorage.getItem(keyFor(id))||'[]'); }catch(_){ return []; } }
+  function saveReview(id, r){
+    const arr = loadReviews(id);
+    arr.push(r);
+    localStorage.setItem(keyFor(id), JSON.stringify(arr));
+  }
+  function calcAvg(arr){ if(!arr.length) return 0; return Math.round((arr.reduce((a,b)=>a+b.rating,0)/arr.length)*10)/10; }
+
+ function setStars(val){
+  currentStars = val;
+  els.stars.querySelectorAll('button').forEach(b=>{
+    const on = Number(b.dataset.val) <= val;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-checked', on ? 'true' : 'false');
+  });
+}
+
+  function bindStars(){
+  // ARIA: Gruppe als Radiogruppe kennzeichnen
+  els.stars.setAttribute('role', 'radiogroup');
+
+  els.stars.querySelectorAll('button').forEach((b, idx) => {
+    const val = Number(b.dataset.val) || (idx + 1);
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-label', String(val));
+    b.setAttribute('aria-checked', 'false');
+    b.style.transform = 'none';           // Sicherheitsnetz: niemals skalieren
+    b.style.transition = 'none';          // keine Animation = kein „Zucken“
+
+    // Verhindert Textauswahl, aber behält Focus für Tastatur
+    b.addEventListener('mousedown', (e) => { e.preventDefault(); });
+
+    b.onclick = () => setStars(val);
+  });
+
+  setStars(0);
+}
+
+  function renderReviews(){
+    const reviews = loadReviews(currentId).sort((a,b)=> b.ts - a.ts);
+    els.list.innerHTML = '';
+    if(!reviews.length){ els.noComments.classList.remove('d-none'); }
+    else els.noComments.classList.add('d-none');
+
+    reviews.forEach(r=>{
+      const div = document.createElement('div');
+      div.className = 'review-item';
+      const stars = '★'.repeat(r.rating) + '☆'.repeat(5-r.rating);
+      const name  = escapeHTML(r.name || '—');
+      const text  = escapeHTML(r.comment || '');
+      const date  = new Date(r.ts).toLocaleString(State.lang);
+      div.innerHTML = `<div class="small text-secondary">${stars} • ${name} • ${date}</div><div>${text}</div>`;
+      els.list.appendChild(div);
+    });
+
+    const avg = calcAvg(reviews);
+    els.avg.textContent = reviews.length ? `${avg} / 5` : '–';
+    els.count.textContent = reviews.length ? `(${reviews.length})` : '';
+  }
+
+  // --- REPLACE: renderMeta(app) ---
+function renderMeta(app){
+  const t = I18N[State.lang].apps.meta;
+  const row = (label, valueHTML) => `<tr><th>${label}</th><td>${valueHTML || '—'}</td></tr>`;
+
+   // --- NEU: Statuswert sauber lokalisieren ---
+const rawStatus = (app.meta && app.meta.status != null) ? app.meta.status : app.status;
+
+// Wenn als Objekt gespeichert (z. B. {de:'Aktiv', en:'active'}) → direkt verwenden
+let statusLabel = '';
+if (rawStatus && typeof rawStatus === 'object') {
+  statusLabel = rawStatus[State.lang] || rawStatus.de || rawStatus.en || '';
+} else {
+  // Wenn als String gespeichert ('active'/'inactive' oder 'aktiv'/'inaktiv') → Schlüssel ermitteln …
+  const key = (function getKey(v){
+    const s = String(v||'').trim().toLowerCase()
+      .replace(/ß/g,'ss')
+      .normalize('NFD').replace(/\p{Diacritic}/gu,''); // Umlaute/Diakritika raus
+    // erst Inaktiv prüfen (damit "inaktiv" nicht als "aktiv" gilt)
+    if (/(^i|inactive|inaktiv|archiv|ausser betrieb|out of service|offline|deprecated|abandoned|geschlossen|stillgelegt|veraltet|unmaintained)/.test(s)) {
+      return 'inactive';
+    }
+    return 'active';
+  })(rawStatus);
+
+  // … und über I18N nach Label mappen
+  statusLabel = (I18N[State.lang] && I18N[State.lang].apps && I18N[State.lang].apps.statusMap
+                 && I18N[State.lang].apps.statusMap[key])
+                || key; // Fallback
+}
+
+  // robust auf DATASETS zugreifen (const ist nicht auf window.*)
+  const allDS = (typeof DATASETS !== 'undefined' && Array.isArray(DATASETS))
+    ? DATASETS
+    : (Array.isArray(window.DATASETS) ? window.DATASETS : []);
+
+  const dsLinks = (app.meta?.datasets || []).map(dsId => {
+    const ds = allDS.find(d => String(d.id) === String(dsId));
+    if (ds) {
+      const label =
+        (ds.name && (ds.name[State.lang] || ds.name.de || ds.name.en)) ||
+        (typeof ds.title === 'object' ? (ds.title[State.lang] || ds.title.de || ds.title.en) : ds.title) ||
+        '';
+      const q = escapeHTML(label || '');
+      return `<a href="#datenbestaende" class="ds-link" data-dsid="${ds.id}" data-dsquery="${q}">${q}</a>`;
+    }
+    // Fallback: kein dsX im UI zeigen – aber Suche befüllen wir mit der ID
+    const q = escapeHTML(String(dsId));
+    return `<a href="#datenbestaende" class="ds-link text-secondary" data-dsquery="${q}">${State.lang==='en'?'Unknown dataset':'Unbekannter Datensatz'}</a>`;
+  }).join(', ') || '—';
+
+  const tagsPretty = (app.tags||[])
+    .map(t => (I18N[State.lang].tagMap && I18N[State.lang].tagMap[t]) || t)
+    .join(' · ');
+  const catPretty  = (I18N[State.lang].appCatMap && I18N[State.lang].appCatMap[app.category]) || app.category;
+
+  // Formate aus den verwendeten Datensätzen extrahieren
+  const formats = new Set();
+  (app.meta?.datasets || []).forEach(dsId => {
+    const ds = allDS.find(d => String(d.id) === String(dsId));
+    if (ds && ds.meta?.format) {
+      const fmt = String(ds.meta.format).trim().toUpperCase();
+      if (fmt) formats.add(fmt);
+    }
+  });
+  const formatsHTML = formats.size > 0 
+    ? Array.from(formats).sort().join(', ')
+    : '—';
+
+  els.meta.innerHTML =
+      row(t.status,  statusLabel)
+    + row(t.created,  app.meta?.created ? new Date(app.meta.created).toLocaleDateString(State.lang) : '')
+    + row(t.updated,  app.meta?.updated ? new Date(app.meta.updated).toLocaleDateString(State.lang) : '')
+    + row(t.author,   escapeHTML(app.meta?.author))
+    + row(t.datasets, dsLinks)
+    + row(t.formats,  escapeHTML(formatsHTML))
+    + row(t.category, escapeHTML(catPretty))
+    + row(t.tags,     escapeHTML(tagsPretty))
+    + row(t.license,  escapeHTML(app.meta?.license))
+    + row(t.tech,     escapeHTML(app.meta?.tech));
+}
+
+
+
+  function fill(app){
+  // Bild, Texte
+  els.hero.src = app.img || '';
+  els.hero.alt = app.name[State.lang] || '';
+  const tTag = (x)=> (I18N[State.lang].tagMap && I18N[State.lang].tagMap[x]) || x;
+  const tCat = (I18N[State.lang].appCatMap && I18N[State.lang].appCatMap[app.category]) || app.category;
+
+  els.cat.textContent   = tCat;
+  els.tags.textContent  = (app.tags||[]).map(tTag).join(' · ');
+  els.title.textContent = app.name[State.lang];
+  els.desc.textContent  = app.desc[State.lang];
+  els.body.innerHTML    = (app.long && app.long[State.lang]) || '';
+
+  renderMeta(app);
+
+    // Dataset-Links im Meta-Block: zur Datenbestände-Liste springen & Suche vorfüllen
+els.meta.querySelectorAll('a.ds-link').forEach(a => {
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const q = a.dataset.dsquery || a.textContent || '';
+
+    // Route umschalten
+    window.location.hash = '#datenbestaende';
+
+    // Nach dem Routen: Suche setzen & Liste rendern
+    setTimeout(() => {
+      const input = document.getElementById('datasetSearch');
+      if (input) {
+        input.value = q;                // Suchbegriff setzen
+        State.datasetPage = 1;          // auf Seite 1 springen (Pagination nutzt das) :contentReference[oaicite:3]{index=3}
+        renderDatasets();               // Filter anwenden
+        input.focus({ preventScroll: true });
+        document.getElementById('section-datenbestaende')
+          ?.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 0);
+  });
+});
+  // Link zum Öffnen der Anwendung setzen
+  els.open.href = app.link || '#';  // <a id="appDetailOpen"> existiert hier sicher. :contentReference[oaicite:1]{index=1}
+
+  // --- Share-Bar (UI; ohne Funktion) direkt unter dem Öffnen-Button ---
+  // Wir erzeugen sie einmal und aktualisieren den Inhalt bei jedem fill().
+  let share = document.getElementById('appShare');
+  if (!share) {
+    share = document.createElement('div');
+    share.id = 'appShare';
+    // Platzierung: direkt nach dem großen Öffnen-Button
+    els.open.insertAdjacentElement('afterend', share);
+  }
+  const tt = I18N[State.lang]; // i18n-Texte (DE/EN sind vorhanden). 
+  share.innerHTML = `
+    <div class="mt-3">
+      <div class="small text-secondary" data-i18n="apps.shareHeading">${tt.apps.shareHeading}</div>
+      <div class="d-flex gap-2 mt-1 flex-wrap">
+        <button type="button" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-facebook me-1"></i>
+          <span data-i18n="apps.share.facebook">${tt.apps.share.facebook}</span>
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-twitter-x me-1"></i>
+          <span data-i18n="apps.share.x">${tt.apps.share.x}</span>
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-linkedin me-1"></i>
+          <span data-i18n="apps.share.linkedin">${tt.apps.share.linkedin}</span>
+        </button>
+      </div>
+    </div>
+  `;
+  // WICHTIG: Kein applyI18n() hier aufrufen, um Re-Render-Schleifen zu vermeiden.
+  // Beim späteren Sprachwechsel übersetzt dein existierendes applyI18n() die data-i18n-Texte automatisch. :contentReference[oaicite:3]{index=3}
+
+  // --- Reviews wie gehabt ---
+  bindStars();
+  els.reviewForm.onsubmit = (e)=>{
+    e.preventDefault();
+    const rating  = currentStars;
+    const name    = els.name.value.trim();
+    const comment = els.comment.value.trim();
+    if(!rating){ alert(State.lang==='en'?'Please select a rating.':'Bitte eine Bewertung wählen.'); return; }
+    saveReview(currentId, { rating, name, comment, ts: Date.now() });
+    ratingCache.delete(currentId);
+    els.name.value=''; els.comment.value=''; setStars(0);
+    renderReviews();
+    renderApps(); 
+  };
+  renderReviews();
+}
+
+  function open(id){
+    const app = APPS.find(a=>a.id===id);
+    if(!app) return;
+    currentId = id;
+    fill(app);
+    els.listView.classList.add('d-none');
+    els.detailView.classList.remove('d-none');
+    setDetailLayout(true);
+  }
+  function close(){
+    currentId = null;
+    els.detailView.classList.add('d-none');
+    els.listView.classList.remove('d-none');
+    setDetailLayout(false);
+  }
+  function refreshIfOpen(){
+    if(!currentId) return;
+    const app = APPS.find(a=>a.id===currentId);
+    if(app) fill(app);
+  }
+
+  els.back?.addEventListener('click', (e)=>{ e.preventDefault(); close(); });
+
+  return { open, close, refreshIfOpen };
+})();
+
+    // Global search
+    function runGlobalSearch(term){
+      const q = (term || '').trim().toLowerCase();
+      const resultsWrap = document.getElementById('globalSearchResults');
+      const container = document.getElementById('resultsContainer'); container.innerHTML = '';
+      let total = 0;
+      function addGroup(title){ const h = document.createElement('h4'); h.className = 'h6 mt-3 text-dresden-black'; h.textContent = title; container.appendChild(h); }
+      if(!q){ resultsWrap.classList.add('d-none'); return; }
+      const postHits = BLOG_POSTS.filter(p => p.title.de.toLowerCase().includes(q) || p.title.en.toLowerCase().includes(q) || p.excerpt.de.toLowerCase().includes(q) || p.excerpt.en.toLowerCase().includes(q));
+      if(postHits.length){ addGroup(I18N[State.lang].search.groupGeneral); postHits.forEach(p => { const a = document.createElement('a'); a.href = `#post/${p.id}`; a.textContent = p.title[State.lang]; const div = document.createElement('div'); div.appendChild(a); container.appendChild(div); total++; }); }
+      const dsHits = DATASETS.filter(ds => ds.name.de.toLowerCase().includes(q) || ds.name.en.toLowerCase().includes(q) || ds.meta.format.toLowerCase().includes(q));
+      if(dsHits.length){ addGroup(I18N[State.lang].search.groupDatasets); dsHits.forEach(ds => { const a = document.createElement('a'); a.href = `#dataset/${ds.id}`; a.textContent = ds.name[State.lang]; const small = document.createElement('small'); small.className = 'text-secondary ms-2'; small.textContent = `${ds.meta.format}`; const div = document.createElement('div'); div.appendChild(a); div.appendChild(small); container.appendChild(div); total++; }); }
+      const appHits = APPS.filter(app => app.name.de.toLowerCase().includes(q) || app.name.en.toLowerCase().includes(q) || app.desc.de.toLowerCase().includes(q) || app.desc.en.toLowerCase().includes(q) || app.tags.some(t=>t.toLowerCase().includes(q)));
+      if(appHits.length){ addGroup(I18N[State.lang].search.groupApps); appHits.forEach(app => { const a = document.createElement('a'); a.href = `#app/${app.id}`; a.textContent = app.name[State.lang]; const small = document.createElement('small'); small.className = 'text-secondary ms-2'; small.textContent = `${tCat(app.category)}`; const div = document.createElement('div'); div.appendChild(a); div.appendChild(small); container.appendChild(div); total++; }); }
+      if(total === 0){ const p = document.createElement('p'); p.className = 'text-secondary'; p.textContent = I18N[State.lang].search.noResults; container.appendChild(p); }
+      resultsWrap.classList.remove('d-none');
+    }
+
+    // Detail
+    function showDetail(type, id){
+      const map = { post: BLOG_POSTS, app: APPS, dataset: DATASETS };
+      const item = map[type].find(x => x.id === id);
+      if(!item){ window.location.hash = '#allgemeines'; return; }
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      const sec = document.getElementById('section-detail'); if(!sec){ window.location.hash = '#allgemeines'; return; }
+      sec.classList.add('active');
+      const t = I18N[State.lang];
+      const typeLabel = type === 'post' ? t.search.groupGeneral : type === 'app' ? t.search.groupApps : t.search.groupDatasets;
+      document.getElementById('detailTypeBadge').textContent = typeLabel;
+      document.getElementById('detailTitle').textContent = (item.name ? item.name[State.lang] : item.title[State.lang]);
+      const meta = [];
+      if(type==='post') meta.push(formatDateISO(item.date, State.lang));
+      if(type==='dataset') meta.push(item.meta.format, new Date(item.meta.updated).toLocaleDateString(State.lang), item.meta.publisher);
+      if(type==='app') meta.push(tCat(item.category), (item.tags||[]).map(tTag).join(' ?? '));
+      document.getElementById('detailMeta').textContent = meta.join(' ?? ');
+      const body = document.getElementById('detailBody'); body.innerHTML = '';
+      const html = item.content ? item.content[State.lang] : '<p>??"</p>';
+      body.insertAdjacentHTML('afterbegin', html);
+      const actions = document.getElementById('detailActions'); actions.innerHTML = '';
+      const backHref = type==='post' ? '#allgemeines' : (type==='app' ? '#anwendungen' : '#datenbestaende');
+      const backTxt = State.lang === 'en' ? 'Back' : 'Zur??ck';
+      const backInline = document.getElementById('detailBackLink');
+      if(backInline){ backInline.href = backHref; backInline.textContent = backTxt; }
+      if(item.link){ const a = document.createElement('a'); a.href = item.link; a.target = '_blank'; a.rel = 'noopener'; a.className = 'btn btn-outline-dark btn-sm'; a.innerHTML = '<i class="bi bi-box-arrow-up-right me-1"></i>'+t.common.open; actions.appendChild(a); }
+      const back = document.createElement('a'); back.href = backHref; back.className = 'btn btn-primary btn-sm'; back.textContent = backTxt; actions.appendChild(back);
+      document.querySelectorAll('.nav-link').forEach(a=>a.classList.toggle('active', a.getAttribute('href') === backHref));
+    }
+
+    // Upload UI
+    const UploadUI = (() => {
+      const MAX_MB = 4;
+      const S = { file:null };
+      const $ = id => document.getElementById(id);
+      function validate(file){
+        const err = $('contactImageError');
+        if(!file){ if(err){ err.style.display='none'; err.textContent=''; } return true; }
+        const okType = ['image/png','image/jpeg'].includes(file.type);
+        const tooBig = file.size > MAX_MB*1024*1024;
+        const lang = getLang();
+        let msg = '';
+        if(!okType) msg = lang==='en' ? 'Only PNG/JPG allowed.' : 'Nur PNG/JPG erlaubt.';
+        else if(tooBig) msg = lang==='en' ? 'File too large (max 4 MB).' : 'Datei zu groß (max. 4 MB).';
+        if(err){ err.textContent = msg; err.style.display = msg ? 'block':'none'; }
+        return !msg;
+      }
+      function update(){
+        const fn = $('fileName'), clear = $('btnClearImage');
+        if(S.file){
+          const mb = (S.file.size/(1024*1024)).toFixed(2);
+          fn.textContent = `${S.file.name} • ${mb} MB`;
+          fn.dataset.empty = '0';
+          clear.classList.remove('d-none');
+        } else {
+          fn.dataset.empty = '1';
+          translateDom();
+          clear.classList.add('d-none');
+        }
+      }
+      function bind(){
+        const input = $('contactImage'), pick=$('btnPickImage'), clear=$('btnClearImage');
+        pick?.addEventListener('click', (e)=>{ e.preventDefault(); input?.click(); });
+        input?.addEventListener('change', ()=>{ S.file = input.files?.[0] || null; if(!validate(S.file)){ S.file=null; input.value=''; } update(); });
+        clear?.addEventListener('click', ()=>{ S.file=null; if(input) input.value=''; update(); validate(null); });
+        translateDom(); update();
+      }
+      return { bind, getFile:()=>S.file, update };
+    })();
+
+    // Alerts
+    function setAlert(type, msgText){
+      const el = document.getElementById('contactAlert');
+      el.className = `alert alert-${type}`;
+      el.textContent = msgText;
+      el.classList.remove('d-none');
+    }
+    function clearAlert(){ const el = document.getElementById('contactAlert'); el.classList.add('d-none'); el.textContent=''; }
+    function txt(id){ const el = document.getElementById(id); if(!el) return ''; return getLang()==='en' ? (el.dataset.tEn||'') : (el.dataset.tDe||''); }
+
+    // Events
+    window.addEventListener('hashchange', setRouteFromHash);
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const newLang = e.target.closest('button').dataset.lang;
+        State.lang = newLang;
+        localStorage.setItem('portal_lang', newLang);
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        e.target.closest('button').classList.add('active');
+        applyI18n(); translateDom();
+      });
+    });
+    document.getElementById('globalSearchForm').addEventListener('submit', (e)=>{ e.preventDefault(); const term = document.getElementById('globalSearchInput').value; runGlobalSearch(term); });
+    document.getElementById('datasetSearch').addEventListener('input', () => {
+  State.datasetPage = 1;
+  renderDatasets();
+});
+document.getElementById('datasetCategory').addEventListener('change', () => {
+  State.datasetPage = 1;
+  renderDatasets();
+});
+document.getElementById('datasetReset').addEventListener('click', () => {
+  document.getElementById('datasetSearch').value = '';
+  document.getElementById('datasetCategory').value = '';
+  State.datasetPage = 1;
+  renderDatasets();
+});
+
+// NEU: Pro-Seite-Auswahl
+document.getElementById('datasetPageSize').addEventListener('change', (e) => {
+  State.datasetPageSize = Number(e.target.value) || 10;
+  localStorage.setItem('dataset_page_size', State.datasetPageSize);
+  State.datasetPage = 1;
+  renderDatasets();
+});
+// NUR EIN TEST
+document.getElementById('appsContactBtn')?.addEventListener('click', (e) => {
+  e.preventDefault();
+
+  // 1) Thema vorwählen (Formular existiert bereits im DOM)
+  const sel = document.getElementById('contactTopic');        // <select id="contactTopic">
+  if (sel) {
+    sel.value = 'application';                                 // Option <option value="application">Anwendung</option>
+    sel.dispatchEvent(new Event('change', { bubbles: true })); // UI-Plugins/Validierung informieren
+  }
+
+  // 2) Route auf Kontakt schalten (dein Router zeigt dann #section-kontakt)
+  window.location.hash = '#kontakt';
+
+  // 3) sanft zum Formular scrollen & Fokus setzen
+  setTimeout(() => {
+    document.getElementById('contactForm')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('contactFirstName')?.focus({ preventScroll: true });
+  }, 50);
+});
+// TEST ENDE
+    // Anwendungen: Suche / Filter / Reset auf Seite 1 + Pro-Seite-Auswahl
+document.getElementById('appsSearch').addEventListener('input', () => {
+  State.appsPage = 1;
+  renderApps();
+});
+
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('app-tag')) {
+    e.target.classList.toggle('active');
+    State.appsPage = 1;
+    renderApps();
+  }
+  if (e.target.classList.contains('app-cat')) {
+    State.appsPage = 1;
+    renderApps();
+  }
+});
+
+document.getElementById('appsReset').addEventListener('click', () => {
+  document.querySelectorAll('.app-cat').forEach(ch => ch.checked = false);
+  document.querySelectorAll('.app-tag').forEach(b => b.classList.remove('active'));
+  document.getElementById('appsSearch').value = '';
+  State.appsPage = 1;
+  renderApps();
+});
+
+document.getElementById('appsSort')?.addEventListener('change', (e) => {
+  State.appsSort = e.target.value;
+  localStorage.setItem('apps_sort', State.appsSort);
+  State.appsPage = 1;
+  renderApps();
+});
+
+// NEU: Pro-Seite-Auswahl für Anwendungen
+document.getElementById('appsPageSize').addEventListener('change', (e) => {
+  State.appsPageSize = Number(e.target.value) || 10;
+  localStorage.setItem('apps_page_size', State.appsPageSize);
+  State.appsPage = 1;
+  renderApps();
+});
+
+// gespeicherten Wert in Select anwenden (beim Load)
+document.getElementById('appsPageSize').value = String(State.appsPageSize);
+
+// Filter: Nur aktive anzeigen
+document.getElementById('appsActiveOnly').addEventListener('change', (e) => {
+  // (optional) Einstellung merken:
+  localStorage.setItem('apps_active_only', e.target.checked ? '1' : '0');
+  State.appsPage = 1;
+  renderApps();
+});
+
+// Beim Load gespeicherten Wert anwenden (optional)
+const savedActiveOnly = localStorage.getItem('apps_active_only');
+if (savedActiveOnly != null) {
+  const box = document.getElementById('appsActiveOnly');
+  if (box) box.checked = savedActiveOnly === '1';
+}
+    document.getElementById('toggleSimpleGeneral').addEventListener('change', (e)=>{
+      document.getElementById('generalSimple').classList.toggle('d-none', !e.target.checked);
+    });
+
+    // Contact + Web3Forms
+    (function(){
+      const ACCESS_KEY = "8296918f-3478-484d-930f-3b2f5789c66e";
+      const form = document.getElementById('contactForm'); if(!form) return;
+      const els = {
+        first:  document.getElementById('contactFirstName'),
+        last:   document.getElementById('contactLastName'),
+        email:  document.getElementById('contactEmail'),
+        phone:  document.getElementById('contactPhone'),
+        topic:  document.getElementById('contactTopic'),
+        msg:    document.getElementById('contactMsg'),
+        img:    document.getElementById('contactImage'),
+        alert:  document.getElementById('contactAlert'),
+        submit: document.getElementById('contactSubmit'),
+        reset:  document.getElementById('contactReset')
+      };
+      function emailLooksOk(v){ return typeof v === 'string' && v.includes('@') && v.indexOf('@') > 0; }
+      function validate(){
+        let ok = true; form.classList.add('was-validated');
+        if(!els.first.value || els.first.value.trim().length < 2) ok = false;
+        if(!els.last.value || els.last.value.trim().length < 2) ok = false;
+        if(!els.email.value || !emailLooksOk(els.email.value)){ els.email.setCustomValidity('invalid'); ok = false; } else { els.email.setCustomValidity(''); }
+        if(!els.topic.value) ok = false;
+        if(!els.msg.value || els.msg.value.trim().length < 20) ok = false;
+        if(els.phone.value && !new RegExp(els.phone.getAttribute('pattern')).test(els.phone.value)) ok = false;
+        return ok;
+      }
+      form.addEventListener('submit', async (e)=>{
+        e.preventDefault(); clearAlert();
+        if(!validate()){ setAlert('danger', getLang()==='en' ? 'Please check your inputs.' : 'Bitte prüfen Sie Ihre Eingaben.'); return; }
+
+        const original = els.submit.textContent;
+        els.submit.disabled = true;
+        els.submit.textContent = getLang()==='en' ? 'Sending…' : 'Senden…';
+
+        try{
+          const fd = new FormData();
+          fd.append('access_key', ACCESS_KEY);
+          const first = els.first.value.trim();
+          const last  = els.last.value.trim();
+          const email = els.email.value.trim();
+          const phone = els.phone.value.trim();
+          const topic = els.topic.value;
+          const msg   = els.msg.value.trim();
+          const lang  = getLang();
+
+          fd.append('name', `${first} ${last}`.trim());
+          fd.append('firstName', first);
+          fd.append('lastName',  last);
+          fd.append('email',     email);
+          if(phone) fd.append('phone', phone);
+          fd.append('topic',     topic);
+          fd.append('message',   msg);
+          fd.append('lang',      lang);
+
+          const file = UploadUI.getFile();
+          if(file) fd.append('attachment', file);
+
+          const rsp = await fetch('https://api.web3forms.com/submit', { method:'POST', body: fd });
+          const data = await rsp.json().catch(()=>({}));
+
+          if(rsp.ok && data?.success !== false){
+            form.reset();
+            form.classList.remove('was-validated');
+            UploadUI.update();
+            setAlert('success', txt('msgSuccess'));
+          } else {
+            setAlert('danger', txt('msgFail'));
+          }
+        }catch(err){
+          setAlert('danger', txt('msgFail'));
+        }finally{
+          els.submit.disabled = false;
+          els.submit.textContent = original;
+        }
+      });
+      els.reset?.addEventListener('click', clearAlert);
+    })();
+
+function updateAppsPagination(totalPages){
+  const ul = document.getElementById('appsPagination'); if(!ul) return;
+  ul.innerHTML = '';
+
+  const makeItem = (label, page, disabled=false, active=false) => {
+    const li = document.createElement('li');
+    li.className = `page-item${disabled ? ' disabled' : ''}${active ? ' active' : ''}`;
+    const a = document.createElement('a');
+    a.className = 'page-link';
+    a.href = '#';
+    a.textContent = label;
+    if(!disabled){
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        State.appsPage = page;
+        renderApps();
+      });
+    }
+    li.appendChild(a);
+    return li;
+  };
+
+  const prevLabel = (I18N[State.lang]?.apps?.prev) || (State.lang==='en' ? 'Prev' : 'Zurück');
+  const nextLabel = (I18N[State.lang]?.apps?.next) || (State.lang==='en' ? 'Next' : 'Weiter');
+
+  // Prev
+  ul.appendChild(makeItem(prevLabel, State.appsPage - 1, State.appsPage <= 1, false));
+
+  // Seiten (±2 um die aktuelle)
+  const start = Math.max(1, State.appsPage - 2);
+  const end   = Math.min(totalPages, State.appsPage + 2);
+  for(let p = start; p <= end; p++){
+    ul.appendChild(makeItem(String(p), p, false, p === State.appsPage));
+  }
+
+  // Next
+  ul.appendChild(makeItem(nextLabel, State.appsPage + 1, State.appsPage >= totalPages, false));
+}
+function normalizeText(s){
+  return (s||'')
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/ß/g,'ss')              // ß → ss
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu,'');  // Umlaute entfernen
+}
+
+function statusKeyFromMeta(meta){
+  // hol Wert aus Objekt oder String
+  const raw = (meta?.status && (typeof meta.status === 'object'
+            ? (meta.status[State.lang] || meta.status.de || meta.status.en)
+            : meta.status)) || '';
+
+  const n = normalizeText(raw);
+
+  // zuerst Inaktiv-Muster prüfen (damit "inaktiv" nicht als "aktiv" gilt)
+  if (/(inactive|inaktiv|archiv|ausser betrieb|auser betrieb|out of service|offline|deprecated|abandoned|geschlossen|stillgelegt|veraltet|unmaintained|nicht erreichbar|down)/.test(n)) {
+    return 'inactive';
+  }
+  // dann Aktiv-Muster
+  if (/(active|aktiv|online|verfugbar|erreichbar|in betrieb|running|operational|maintained)/.test(n)) {
+    return 'active';
+  }
+  // Default: als aktiv interpretieren
+  return 'active';
+}
+    
+
+    // Init
+    (function init(){
+  const saved = localStorage.getItem('portal_lang');
+  if(saved && I18N[saved]){ State.lang = saved; }
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    if(btn.dataset.lang === State.lang) btn.classList.add('active');
+  });
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const sortSel = document.getElementById('appsSort');
+  if (sortSel) sortSel.value = State.appsSort;
+  // Pro-Seite-Auswahl initial setzen
+  const sizeSel = document.getElementById('datasetPageSize');
+  if(sizeSel){ sizeSel.value = String(State.datasetPageSize); }
+
+  // Kontakt: Bild-Upload Buttons binden
+  UploadUI.bind();
+
+  renderAppFacets();
+  applyI18n();
+  translateDom();
+  renderDatasets();
+  renderApps();
+  setRouteFromHash();
+})();
+
+
+  </script>
+
+  <!-- Dataset modal -->
+  <div class="modal fade" id="datasetModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">&nbsp;</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <ul class="dataset-meta-list list-unstyled mb-3 small"></ul>
+          <div class="dataset-summary"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blog post modal -->
+  <div class="modal fade" id="blogModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">&nbsp;</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <img class="img-fluid rounded mb-3 blog-img" src="" alt="">
+          <div class="mb-2 text-muted blog-date"></div>
+          <div class="blog-tags mb-2"></div>
+          <div class="blog-content"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  
+
+</body>
+</html>
