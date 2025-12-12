@@ -279,13 +279,13 @@
 </div>
 
           <div class="mt-3">
-            <label class="form-label" data-i18n="apps.categories">Kategorien</label>
-            <div id="appsCategories" class="vstack gap-2"></div>
+            <span id="appsCategoriesLabel" class="form-label d-block" data-i18n="apps.categories">Kategorien</span>
+            <div id="appsCategories" class="vstack gap-2" aria-labelledby="appsCategoriesLabel"></div>
           </div>
 
           <div class="mt-3">
-            <label class="form-label" data-i18n="apps.tags">Tags</label>
-            <div id="appsTags" class="d-flex flex-wrap gap-2"></div>
+            <span id="appsTagsLabel" class="form-label d-block" data-i18n="apps.tags">Tags</span>
+            <div id="appsTags" class="d-flex flex-wrap gap-2" aria-labelledby="appsTagsLabel"></div>
             <a href="#open-data-info" class="tags-explain mt-2" onclick="setTimeout(() => { const el = document.getElementById('tags-explanation'); if(el) el.scrollIntoView({behavior: 'smooth'}); }, 100)"><i class="bi bi-info-circle"></i><span data-i18n="apps.tagsExplain">Explanation of Tags</span></a>
           </div>
 
@@ -382,8 +382,8 @@
 
               <form id="reviewForm" class="vstack gap-2">
                 <div>
-                  <label class="form-label" data-i18n="apps.yourRating">Ihre Bewertung</label>
-                  <div class="rating-stars" id="ratingStars" aria-label="Bewertung">
+                  <span id="ratingLabel" class="form-label d-block" data-i18n="apps.yourRating">Ihre Bewertung</span>
+                  <div class="rating-stars" id="ratingStars" aria-labelledby="ratingLabel">
                     <button type="button" data-val="1" aria-label="1">★</button>
                     <button type="button" data-val="2" aria-label="2">★</button>
                     <button type="button" data-val="3" aria-label="3">★</button>
@@ -807,6 +807,12 @@ statusMap: { active: "Aktiv", inactive: "Inaktiv" }
         imprint:{ title:"Impressum & Datenschutz", imprint:"Impressum", privacy:"Datenschutz", placeholder:"Angaben gemäß § 5 TMG – Platzhalter für Dienststelle, Anschrift, Vertretung, Kontakt.", privacyText:"Hinweise zur Verarbeitung personenbezogener Daten in diesem Portal – Platzhalter." },
         footer:{ contact:"Kontaktformular", imprint:"Impressum / Datenschutz" },
         common:{ open:"Öffnen", details:"Details" },
+        placeholder:{
+          appTitle:"Anwendungstitel",
+          detailTitle:"Titel",
+          blogTitle:"Beitragstitel",
+          datasetTitle:"Datensatz"
+        },
         tags:{ name:{ "Karte":"Karte","Echtzeit":"Echtzeit","Diagramm":"Diagramm","CSV":"CSV","POI":"POI","Service":"Service","Formulare":"Formulare","OpenRoute":"OpenRoute","Zeitreihe":"Zeitreihe","Kalender":"Kalender","Adressen":"Adressen","API":"API","Raster":"Raster" }, desc:{ "Karte":"Anwendung zeigt Daten auf einer geografischen Karte. Ideal für ortsgebundene Informationen wie Standorte, Routen oder regionale Verteilungen.","Echtzeit":"Die Daten werden in Echtzeit oder in sehr kurzen Intervallen aktualisiert. Beispiele: Live-Verkehrsinformationen, aktuelle Messwerte.","Diagramm":"Daten werden in Form von Diagrammen, Grafiken oder Visualisierungen dargestellt. Hilft bei der schnellen Erfassung von Trends und Mustern.","CSV":"Die Daten liegen im CSV-Format vor. Dieses Format ist weit verbreitet und kann in Tabellenkalkulationen wie Excel leicht importiert werden.","POI":"Point of Interest – Die Anwendung zeigt oder nutzt Punkte von Interesse, wie Geschäfte, Sehenswürdigkeiten oder öffentliche Einrichtungen.","Service":"Die Anwendung bietet ein praktisches Service oder Tool, das häufig in Echtzeit funktioniert und unmittelbar nützlich ist.","Formulare":"Mit dieser Anwendung können Sie Formulare ausfüllen und einsenden, zum Beispiel für Meldungen oder Anfragen.","OpenRoute":"Die Anwendung nutzt OpenStreetMap oder ähnliche offene Routing-Dienste für Navigations- und Routenplanungsfunktionen.","Zeitreihe":"Daten werden als zeitliche Abfolge dargestellt und ermöglichen die Analyse von Entwicklungen über einen Zeitraum.","Kalender":"Die Anwendung zeigt Termine, Veranstaltungen oder zeitliche Abläufe in Kalenderform.","Adressen":"Die Anwendung enthält oder nutzt Adressdaten, wie z.B. Behördenadressen, Geschäftsadressen oder Standorte.","API":"Eine API (Programmierschnittstelle) ist vorhanden, die es Entwicklern ermöglicht, Daten programmatisch zu nutzen.","Raster":"Daten liegen in Rasterformat vor (Bilder, Satellitenaufnahmen). Wird häufig für geografische oder Sensordaten verwendet." } },
         appCatMap:{ "Mobilität":"Mobilität","Umwelt":"Umwelt","Kultur":"Kultur","Verwaltung":"Verwaltung" },
         tagMap:{ "Karte":"Karte","Echtzeit":"Echtzeit","Diagramm":"Diagramm","CSV":"CSV","POI":"POI","Service":"Service","Formulare":"Formulare","OpenRoute":"OpenRoute","Zeitreihe":"Zeitreihe","Kalender":"Kalender","Adressen":"Adressen","API":"API","Raster":"Raster" },
@@ -922,6 +928,12 @@ sort: {
         imprint:{ title:"Imprint & Privacy", imprint:"Imprint", privacy:"Privacy", placeholder:"Provider details – placeholder for department, address, representation, contact.", privacyText:"Notes on personal data processing in this portal – placeholder." },
         footer:{ contact:"Contact form", imprint:"Imprint / Privacy" },
         common:{ open:"Open", details:"Details" },
+        placeholder:{
+          appTitle:"Application title",
+          detailTitle:"Title",
+          blogTitle:"Post title",
+          datasetTitle:"Dataset"
+        },
         tags:{ name:{ "Karte":"Map","Echtzeit":"Realtime","Diagramm":"Chart","CSV":"CSV","POI":"POI","Service":"Service","Formulare":"Forms","OpenRoute":"OpenRoute","Zeitreihe":"Time series","Kalender":"Calendar","Adressen":"Addresses","API":"API","Raster":"Raster" }, desc:{ "Karte":"Application displays data on a geographic map. Ideal for location-based information such as locations, routes, or regional distributions.","Echtzeit":"Data is updated in real-time or at very short intervals. Examples: live traffic information, current sensor readings.","Diagramm":"Data is presented in the form of diagrams, graphs, or visualizations. Helps quickly identify trends and patterns.","CSV":"Data is provided in CSV format. This format is widely supported and can be easily imported into spreadsheet applications like Excel.","POI":"Point of Interest – The application shows or uses points of interest, such as shops, landmarks, or public facilities.","Service":"The application provides a practical service or tool that often works in real-time and is directly useful.","Formulare":"With this application you can fill out and submit forms, for example for notifications or requests.","OpenRoute":"The application uses OpenStreetMap or similar open routing services for navigation and route planning functions.","Zeitreihe":"Data is presented as a time series, enabling the analysis of developments over a period of time.","Kalender":"The application displays appointments, events, or time sequences in calendar format.","Adressen":"The application contains or uses address data, such as government office addresses, business addresses, or locations.","API":"An API (Application Programming Interface) is available that allows developers to use data programmatically.","Raster":"Data is provided in raster format (images, satellite imagery). Commonly used for geographic or sensor data." } },
         appCatMap:{ "Mobilität":"Mobility","Umwelt":"Environment","Kultur":"Culture","Verwaltung":"Administration" },
         tagMap:{ "Karte":"Map","Echtzeit":"Realtime","Diagramm":"Chart","CSV":"CSV","POI":"POI","Service":"Service","Formulare":"Forms","OpenRoute":"OpenRoute","Zeitreihe":"Time series","Kalender":"Calendar","Adressen":"Addresses","API":"API","Raster":"Raster" },
@@ -2552,7 +2564,7 @@ function statusKeyFromMeta(meta){
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">&nbsp;</h4>
+          <h4 class="modal-title" data-i18n="placeholder.datasetTitle">Datensatz</h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -2571,7 +2583,7 @@ function statusKeyFromMeta(meta){
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">&nbsp;</h4>
+          <h4 class="modal-title" data-i18n="placeholder.blogTitle">Beitragstitel</h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -2593,6 +2605,5 @@ function statusKeyFromMeta(meta){
 
 </body>
 </html>
-
 
 
